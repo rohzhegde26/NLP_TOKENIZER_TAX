@@ -1,0 +1,10 @@
+# Published standard INPUT prices (USD per 1M tokens), snapshot 2026-10-23. First row per tokenizer is the reference price used by E2.
+# usd_inr: ~94.9 INR/USD on 2026-10-23 (Trading Economics / alanchand quotes 94.8-95.1).
+# gemma2, xlmr, sarvam1: no current serverless API price for that tokenizer -> no cost row (NaN in e2_cost.csv).
+tokenizer,model,usd_per_m_input,source_url,snapshot_date,usd_inr
+cl100k,gpt-4-turbo-2024-04-09,10.00,https://developers.openai.com/api/docs/pricing,2026-10-23,94.9
+cl100k,gpt-3.5-turbo,0.50,https://developers.openai.com/api/docs/pricing,2026-10-23,94.9
+o200k,gpt-4o,2.50,https://developers.openai.com/api/docs/pricing,2026-10-23,94.9
+o200k,gpt-4o-mini,0.15,https://developers.openai.com/api/docs/pricing,2026-10-23,94.9
+llama3,meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo (Together AI),0.18,https://www.together.ai/pricing,2026-10-23,94.9
+qwen2.5,Qwen/Qwen2.5-7B-Instruct-Turbo (Together AI),0.30,https://www.together.ai/pricing,2026-10-23,94.9
