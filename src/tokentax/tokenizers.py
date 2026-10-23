@@ -67,6 +67,16 @@ class TiktokenTokenizer:
     def is_single_byte(self, tid: int) -> bool:
         return not _is_complete_utf8(self.token_bytes(tid))
 
+    def id(self, b: bytes) -> int | None:
+        """Token id whose bytes are exactly `b`, or None (used by re-segmentation, Algorithm 1)."""
+        try:
+            return self._enc.encode_single_token(b)
+        except KeyError:
+            return None
+
+    def has(self, b: bytes) -> bool:
+        return self.id(b) is not None
+
 
 class HFTokenizer:
     def __init__(self, name: str):
@@ -75,8 +85,32 @@ class HFTokenizer:
         self.name = name
         self._tok = AutoTokenizer.from_pretrained(HF_IDS[name])
         # Byte-level BPE (GPT-2 style: Llama 3, Qwen) stores bytes as printable unicode.
-        self._byte_decoder = {v: k for k, v in _bytes_to_unicode().items()}
+        self._byte_encoder = _bytes_to_unicode()
+        self._byte_decoder = {v: k for k, v in self._byte_encoder.items()}
         self._byte_level = '"ByteLevel"' in self._tok.backend_tokenizer.to_str()
+        self._vocab = self._tok.get_vocab()
+
+    def id(self, b: bytes) -> int | None:
+        """Token id whose bytes are exactly `b`, or None (used by re-segmentation, Algorithm 1).
+
+        SentencePiece: a lone byte maps to its <0xXX> byte-fallback token when the vocab has one.
+        Note: SentencePiece decode() strips the leading space of the first piece, so callers should
+        compare decoded strings, not raw bytes, at sequence starts.
+        """
+        if self._byte_level:
+            return self._vocab.get("".join(self._byte_encoder[x] for x in b))
+        try:
+            s = b.decode("utf-8")
+        except UnicodeDecodeError:
+            s = None
+        if s is not None and (tid := self._vocab.get(s.replace(" ", "▁"))) is not None:
+            return tid
+        if len(b) == 1:
+            return self._vocab.get(f"<0x{b[0]:02X}>")
+        return None
+
+    def has(self, b: bytes) -> bool:
+        return self.id(b) is not None
 
     def encode(self, text: str) -> list[int]:
         return self._tok.encode(text, add_special_tokens=False)

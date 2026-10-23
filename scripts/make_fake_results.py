@@ -62,6 +62,20 @@ def e4():
     return pd.DataFrame(rows, columns=COLUMNS["e4_results"])
 
 
+def decomposition():
+    """PROPOSED schema (not a Day-1 contract): output of Algorithm 2 per (model, lang)."""
+    rows = []
+    for m in MODELS:
+        for l in GPU_LANGS[1:]:
+            r = {"model": m, "lang": l}
+            for k, mu in [("d_ctx", 0.08), ("d_frag", 0.05), ("d_res", 0.12)]:
+                v = mu * rng.uniform(0.5, 1.5)
+                r.update({k: v, f"{k}_lo": v - 0.03, f"{k}_hi": v + 0.03})
+            r["share_capped"] = rng.uniform(0, 0.1)
+            rows.append(r)
+    return pd.DataFrame(rows)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="results/fake")
@@ -72,3 +86,5 @@ if __name__ == "__main__":
         check(df, name)
         df.to_csv(f"{a.out}/{name}.csv", index=False)
         print(f"wrote {a.out}/{name}.csv ({len(df)} rows)")
+    decomposition().to_csv(f"{a.out}/decomposition.csv", index=False)
+    print(f"wrote {a.out}/decomposition.csv (proposed schema)")

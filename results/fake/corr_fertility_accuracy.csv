@@ -1,0 +1,5 @@
+model,tokenizer,metric,n_langs,spearman_rho,p_value
+gemma2-2b,gemma2,fertility,7,-1.0,0.0
+gemma2-2b,gemma2,tax_vs_eng,7,-0.929,0.0025
+qwen2.5-3b,qwen2.5,fertility,7,-1.0,0.0
+qwen2.5-3b,qwen2.5,tax_vs_eng,7,-0.964,0.0005

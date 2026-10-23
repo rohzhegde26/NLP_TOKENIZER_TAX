@@ -20,6 +20,9 @@ Gated on the Hub (click "Agree"): `openlanguagedata/flores_plus`, `meta-llama/Ll
 | `make e1` | `results/e1_intrinsic.csv`, `results/e1_summary.csv` |
 | `make e2` | `results/e2_cost.csv`, `results/e2_context.csv` (uses latest `configs/prices_*.csv`) |
 | `make figures` | `figures/fig_*.png/.pdf` (falls back to fake data, with a warning, if a real CSV is missing) |
+| `make corr` | Spearman fertility vs baseline accuracy (needs real `e3_results.csv`; else writes to `results/fake/`) |
+| `make check-srivastava` | `results/srivastava_comparison.csv`: our cl100k/o200k vs Srivastava (2026) Table 2 |
+| `python scripts/make_paper_numbers.py` | `paper/numbers.tex`: every E1-E2 number as a LaTeX macro (never retype numbers) |
 | `make test` | pytest (no network) |
 
 Without `make`: `set PYTHONPATH=src` then `python scripts/run_e1.py` etc.
@@ -39,5 +42,6 @@ scripts/        run_e*.py, fig_*.py, make_fake_results.py
 configs/        prices_<date>.csv
 results/        result CSVs (committed); results/fake/
 figures/        generated figures
+paper/          ACL draft (main.tex, sections/, refs.bib, numbers.tex) -- lane A
 app/  report/   lane D
 ```

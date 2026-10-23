@@ -30,5 +30,9 @@ def e2_table(summary: pd.DataFrame, prices: pd.DataFrame) -> tuple[pd.DataFrame,
     ctx = s[["tokenizer", "lang", "tax_vs_eng"]].copy()
     for w in WINDOWS:
         ctx[f"eng_words_fit_{w}"] = w * s.eng_words / s.n_tokens
+        # K = W / T: usable context in English-equivalent tokens (plan, "Costs of the tax")
+        ctx[f"eng_equiv_tokens_{w}"] = w / s.tax_vs_eng
     ctx["pct_window_lost"] = 100 * (1 - 1 / s.tax_vs_eng)
+    # Attention FLOPs relative to English grow ~ T^2 for the same content
+    ctx["attn_flops_ratio"] = s.tax_vs_eng ** 2
     return cost, ctx

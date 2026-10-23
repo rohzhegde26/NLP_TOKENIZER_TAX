@@ -1,0 +1,96 @@
+% The Tokenizer Tax -- 4-page ACL short paper (draft). Owner: Saket (lane A).
+% Overleaf: start from the official ACL template (acl.sty / acl_natbib.bst from github.com/acl-org/acl-style-files),
+% then drop in this file, refs.bib, numbers.tex and ../figures/*.pdf.
+% Every number comes from numbers.tex (scripts/make_paper_numbers.py). Never type a result by hand.
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\graphicspath{{../figures/}{figures/}}
+\input{numbers}
+
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{Context, Fragmentation or Competence? Decomposing the Tokenizer Tax for Indian Languages}
+
+\author{Rohit Ajit Bharadwaj \and Rohith P Hegde \and S Sachithananthan \and Saket M \\
+  RV University, Bengaluru}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Indian-language text needs several times more tokens than the same content in English. We audit
+\nTokenizers{} tokenizers on \nLangs{} Indian languages: under \texttt{cl100k\_base} the mean tax is
+\meanTaxCl$\times$ (up to \maxTaxCl$\times$ for \maxTaxLangCl), shrinking to \meanTaxOo$\times$ under
+\texttt{o200k\_base} and \meanTaxSa$\times$ under Sarvam-1. Prior work correlates this tax with lower
+accuracy but cannot say why. We decompose the accuracy gap of deployed open models on Belebele into
+three causally identified parts, using inference-only interventions: context lost to the token budget,
+fragmentation itself (by fragmenting English to the Indic level), and residual competence.
+\todo{one sentence of E3/E4 headline results}
+\end{abstract}
+
+\section{Introduction}
+Tokenizers trained mostly on English split Indian-language text into many more, smaller pieces
+\citep{petrov2023,ahia2023}. Users pay per token, fit less content into a context window, and spend
+quadratically more attention compute. \citet{srivastava2026} measured this ``tokenizer tax'' for ten Indian
+languages and traced it to failed byte merges, but their link to accuracy is a cross-language
+correlation, confounded by how much training data each language has.
+
+We ask how much of the accuracy gap between an Indian language and English is caused by (i)~content lost
+to a token budget, (ii)~fragmentation itself, and (iii)~the model knowing the language less well.
+Contributions:
+\begin{enumerate}
+  \item An audit of \nTokenizers{} tokenizers $\times$ \nLangs{} languages with cost and context consequences (\S\ref{sec:audit}).
+  \item A counterfactual decomposition of the gap using only inference: equal-token truncation and
+        \emph{matched fragmentation of English} (\S\ref{sec:method}).
+  \item Results for two open models on six Indian languages, with paired tests on the same items (\S\ref{sec:results}).
+\end{enumerate}
+
+\section{Related work}
+\paragraph{Measuring the tax.} Parallel-corpus token ratios show disparities of up to 15$\times$ across
+languages \citep{petrov2023} and translate directly into API cost \citep{ahia2023}. For Indian languages,
+\citet{srivastava2026} report fertility, bytes per token and context erosion for six tokenizers, attribute
+the tax to unmerged single bytes ($r{=}0.89$), and leave causality open. \todo{Dhar; Mandarapu \& Kunkunuru; Tamang \& Bora -- add once lit-survey fixes land}
+\paragraph{Does tokenization affect accuracy?} Controlled studies train models with different tokenizers
+\citep{rust2021,ali2024}; they are causal but costly and use small models. \citet{zheng2025} feed
+non-canonical tokenizations to deployed models, but only for English benchmarks. BPE-dropout
+\citep{provilkov2020} randomises segmentation during training; we apply the same idea at inference as an intervention.
+\paragraph{Mitigation.} Larger multilingual vocabularies (o200k, Gemma, XLM-R) and Indic tokenizers
+(Sarvam-1) cut the tax, but lower fertility has not been shown to raise accuracy \citep{ali2024}.
+
+\section{Measuring the tax}\label{sec:audit}
+\input{sections/methodology_e1_e2}
+
+\section{Decomposing the accuracy gap}\label{sec:method}
+For model $M$, language $\ell$ and budget $B$ (the English passage's own token count), the gap
+$\Delta(\ell)=A(\ell_0,\tau,B)-A(\ell,\tau,B)$ splits exactly into
+\begin{align*}
+\Delta_{\mathrm{ctx}} &= A(\ell,\tau,\infty)-A(\ell,\tau,B),\\
+\Delta_{\mathrm{frag}} &= A(\ell_0,\tau,\infty)-A(\ell_0,s^{\ell},\infty),\\
+\Delta_{\mathrm{res}} &= A(\ell_0,s^{\ell},\infty)-A(\ell,\tau,\infty),
+\end{align*}
+where $s^{\ell}$ re-segments each English passage until it has as many tokens as the same passage in $\ell$.
+\todo{Algorithm 1 (matched fragmentation), single-byte condition, models, Belebele setup -- lanes B/C}
+
+\section{Results}\label{sec:results}
+\todo{E3 table; Figure~\ref{fig:decomp}; E4 slopes. Insert after merge day.}
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig_decomposition}
+  \caption{Accuracy gap vs English split into context, fragmentation and competence. \todo{real data}}
+  \label{fig:decomp}
+\end{figure}
+
+\section*{Limitations}
+Two small (2--3B) models in 4-bit, one task (reading comprehension), 300 items per language.
+Fragmented English is out-of-distribution for the model, so $\Delta_{\mathrm{frag}}$ is an upper bound.
+English cannot be split finer than characters, so matching is capped for some items (reported separately).
+Truncation approximates, but is not, a real long-context limit. API prices are a dated snapshot.
+
+\bibliography{refs}
+\end{document}

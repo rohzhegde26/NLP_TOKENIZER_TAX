@@ -39,3 +39,12 @@ def test_stats():
     assert lo < 0.5 < hi
     assert mcnemar([1, 1, 0], [1, 1, 0]) == 1.0
     assert holm([0.01, 0.04, 0.03]) == pytest.approx([0.03, 0.06, 0.06])
+
+
+@pytest.mark.parametrize("name", ["cl100k", "o200k"])
+def test_has_and_id_for_resegmentation(name):
+    tok = get_tokenizer(name)
+    assert all(tok.has(bytes([b])) for b in range(256))  # byte-level vocab: every single byte exists
+    for tid in tok.encode("മലയാളം hello"):
+        assert tok.id(tok.token_bytes(tid)) == tid
+    assert tok.id(b"\xff\xfe\xfd\xfc this is not one token") is None

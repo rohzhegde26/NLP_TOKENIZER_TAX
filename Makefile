@@ -14,5 +14,10 @@ figures:
 	$(PY) scripts/fig_context_loss.py
 	$(PY) scripts/fig_e3.py
 	$(PY) scripts/fig_e4.py
+	$(PY) scripts/fig_decomposition.py
+corr:
+	$(PY) scripts/corr_fertility_accuracy.py
+check-srivastava:
+	$(PY) scripts/compare_srivastava.py
 test:
 	$(PY) -m pytest -q -m "not network"
