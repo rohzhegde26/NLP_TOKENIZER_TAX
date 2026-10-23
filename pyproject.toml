@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tokentax"
+version = "0.1.0"
+description = "The Tokenizer Tax: measuring and explaining the token cost of Indian languages"
+requires-python = ">=3.10"
+dependencies = [
+  "tiktoken", "transformers", "sentencepiece", "protobuf", "datasets",
+  "pandas", "numpy", "scipy", "matplotlib", "huggingface_hub",
+]
+
+[project.optional-dependencies]
+gpu = ["torch", "accelerate", "bitsandbytes"]
+stats = ["statsmodels"]
+app = ["gradio", "plotly"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["network: needs Hugging Face downloads (deselect with -m 'not network')"]
