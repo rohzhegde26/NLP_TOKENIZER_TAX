@@ -67,15 +67,21 @@ class TiktokenTokenizer:
     def is_single_byte(self, tid: int) -> bool:
         return not _is_complete_utf8(self.token_bytes(tid))
 
-    def id(self, b: bytes) -> int | None:
-        """Token id whose bytes are exactly `b`, or None (used by re-segmentation, Algorithm 1)."""
+    def _lookup(self, b: bytes) -> int | None:
         try:
             return self._enc.encode_single_token(b)
         except KeyError:
             return None
 
+    def id(self, b: bytes) -> int:
+        """Token id whose bytes are exactly `b` (re-segmentation, Algorithm 1). Raises KeyError if absent."""
+        tid = self._lookup(b)
+        if tid is None:
+            raise KeyError(f"bytes {b!r} not in vocabulary for {self.name}")
+        return tid
+
     def has(self, b: bytes) -> bool:
-        return self.id(b) is not None
+        return self._lookup(b) is not None
 
 
 class HFTokenizer:
@@ -90,8 +96,15 @@ class HFTokenizer:
         self._byte_level = '"ByteLevel"' in self._tok.backend_tokenizer.to_str()
         self._vocab = self._tok.get_vocab()
 
-    def id(self, b: bytes) -> int | None:
-        """Token id whose bytes are exactly `b`, or None (used by re-segmentation, Algorithm 1).
+    def id(self, b: bytes) -> int:
+        """Token id whose bytes are exactly `b` (re-segmentation, Algorithm 1). Raises KeyError if absent."""
+        tid = self._lookup(b)
+        if tid is None:
+            raise KeyError(f"bytes {b!r} not in vocabulary for {self.name}")
+        return tid
+
+    def _lookup(self, b: bytes) -> int | None:
+        """Token id for bytes `b`, or None.
 
         SentencePiece: a lone byte maps to its <0xXX> byte-fallback token when the vocab has one.
         Note: SentencePiece decode() strips the leading space of the first piece, so callers should
@@ -110,7 +123,7 @@ class HFTokenizer:
         return None
 
     def has(self, b: bytes) -> bool:
-        return self.id(b) is not None
+        return self._lookup(b) is not None
 
     def encode(self, text: str) -> list[int]:
         return self._tok.encode(text, add_special_tokens=False)

@@ -47,4 +47,7 @@ def test_has_and_id_for_resegmentation(name):
     assert all(tok.has(bytes([b])) for b in range(256))  # byte-level vocab: every single byte exists
     for tid in tok.encode("മലയാളം hello"):
         assert tok.id(tok.token_bytes(tid)) == tid
-    assert tok.id(b"\xff\xfe\xfd\xfc this is not one token") is None
+    bad = b"\xff\xfe\xfd\xfc this is not one token"
+    assert not tok.has(bad)
+    with pytest.raises(KeyError):  # lane C's resegment relies on KeyError
+        tok.id(bad)
