@@ -5,7 +5,8 @@ Indian languages (Hindi, Marathi, Bengali, Assamese, Gujarati, Punjabi, Odia, Ur
 Kannada, Malayalam), NFC-normalised. Because the sentences are translations of each other, token
 counts compare the cost of the \emph{same content}. We audit \texttt{cl100k\_base} and
 \texttt{o200k\_base} (tiktoken) and the Hugging Face tokenizers of Llama~3, Qwen2.5, Gemma~2, XLM-R and
-Sarvam-1, always without special tokens. \todo{Llama 3 pending licence approval}
+Sarvam-1, always without special tokens. Llama~3's vocabulary extends \texttt{cl100k\_base}, and its
+tax is close to \texttt{cl100k}'s except for Hindi (\taxLlHin$\times$ vs \taxClHin$\times$), Marathi and Urdu.
 
 \paragraph{Metrics.}
 For tokenizer $\tau$ and language $\ell$, summing over all sentences $c$:
