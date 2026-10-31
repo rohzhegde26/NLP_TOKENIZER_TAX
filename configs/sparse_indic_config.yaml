@@ -1,0 +1,45 @@
+sparse_indic:
+  core_vocab_size: 32000
+  lang_bank_size: 8192
+  num_brahmic_fallback_tokens: 128
+  sentinel_tokens:
+    - "<SWITCH:hin_Deva>"
+    - "<SWITCH:mar_Deva>"
+    - "<SWITCH:npi_Deva>"
+    - "<SWITCH:ben_Beng>"
+    - "<SWITCH:asm_Beng>"
+    - "<SWITCH:guj_Gujr>"
+    - "<SWITCH:pan_Guru>"
+    - "<SWITCH:ory_Orya>"
+    - "<SWITCH:tam_Taml>"
+    - "<SWITCH:tel_Telu>"
+    - "<SWITCH:kan_Knda>"
+    - "<SWITCH:mal_Mlym>"
+
+  scaffold_pruning:
+    enabled: true
+    min_post_merge_freq: 3
+    high_pmi_stem_slots: 1024
+
+  pretokenizer:
+    enforce_akshara_boundary: true
+    enforce_single_word_cap: true
+    morphological_pre_split: true
+    suffix_min_len: 2
+    suffix_max_len: 6
+    suffix_entropy_threshold: 1.2
+
+  bpe_dropout:
+    training_prob: 0.10
+    inference_prob: 0.0
+
+  pan_indic_subspace:
+    num_anchors: 128
+    rank_r: 64
+    d_model: 1536
+    cognate_init_similarity: 0.85
+
+  router:
+    scan_prefill_unicode: true
+    scan_prefill_keywords: true
+    latency_budget_ms: 1.0

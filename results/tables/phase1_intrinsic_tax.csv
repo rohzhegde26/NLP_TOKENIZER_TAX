@@ -1,0 +1,131 @@
+tokenizer,language,fertility,parity_ratio,bytes_per_token,chars_per_token,single_byte_rate_pct,total_tokens,total_words,total_bytes
+OpenAI Legacy BPE (cl100k_base),eng_Latn,1.241,1.0,4.86,4.855,11.44,27182,21901,132096
+OpenAI Legacy BPE (cl100k_base),hin_Deva,5.045,4.822,2.606,1.013,32.37,129364,25643,337094
+OpenAI Legacy BPE (cl100k_base),mar_Deva,7.215,5.114,2.589,0.97,36.21,137410,19046,355712
+OpenAI Legacy BPE (cl100k_base),npi_Deva,6.926,4.838,2.621,0.98,34.34,129516,18701,339472
+OpenAI Legacy BPE (cl100k_base),ben_Beng,8.081,5.877,2.187,0.819,43.57,157626,19506,344682
+OpenAI Legacy BPE (cl100k_base),asm_Beng,8.669,6.238,2.004,0.753,46.1,167224,19289,335076
+OpenAI Legacy BPE (cl100k_base),guj_Gujr,9.972,7.763,1.59,0.607,50.52,208278,20886,331068
+OpenAI Legacy BPE (cl100k_base),pan_Guru,8.238,7.949,1.613,0.625,50.21,213407,25906,344172
+OpenAI Legacy BPE (cl100k_base),ory_Orya,17.18,12.594,1.072,0.4,92.93,337072,19620,361459
+OpenAI Legacy BPE (cl100k_base),tam_Taml,12.386,7.762,2.029,0.742,46.18,207772,16775,421641
+OpenAI Legacy BPE (cl100k_base),tel_Telu,13.301,8.428,1.57,0.588,50.39,225286,16938,353711
+OpenAI Legacy BPE (cl100k_base),kan_Knda,14.958,8.976,1.559,0.574,50.43,240818,16100,375480
+OpenAI Legacy BPE (cl100k_base),mal_Mlym,16.271,9.049,1.695,0.615,52.42,242932,14930,411753
+OpenAI Modern BPE (o200k_base),eng_Latn,1.227,1.0,4.916,4.911,11.35,26873,21901,132096
+OpenAI Modern BPE (o200k_base),hin_Deva,1.649,1.588,7.971,3.099,5.86,42292,25643,337094
+OpenAI Modern BPE (o200k_base),mar_Deva,2.571,1.839,7.265,2.721,6.26,48965,19046,355712
+OpenAI Modern BPE (o200k_base),npi_Deva,2.32,1.629,7.826,2.926,3.46,43377,18701,339472
+OpenAI Modern BPE (o200k_base),ben_Beng,2.337,1.711,7.56,2.83,3.95,45592,19506,344682
+OpenAI Modern BPE (o200k_base),asm_Beng,2.77,2.012,6.27,2.357,4.09,53440,19289,335076
+OpenAI Modern BPE (o200k_base),guj_Gujr,2.305,1.806,6.878,2.627,7.1,48135,20886,331068
+OpenAI Modern BPE (o200k_base),pan_Guru,2.715,2.645,4.893,1.897,5.5,70345,25906,344172
+OpenAI Modern BPE (o200k_base),ory_Orya,6.828,5.05,2.698,1.007,13.91,133961,19620,361459
+OpenAI Modern BPE (o200k_base),tam_Taml,3.171,2.001,7.926,2.897,6.62,53199,16775,421641
+OpenAI Modern BPE (o200k_base),tel_Telu,3.062,1.956,6.82,2.555,7.76,51863,16938,353711
+OpenAI Modern BPE (o200k_base),kan_Knda,3.29,1.988,7.088,2.608,6.6,52975,16100,375480
+OpenAI Modern BPE (o200k_base),mal_Mlym,3.522,1.973,7.83,2.84,6.52,52584,14930,411753
+Qwen2.5 Byte-Level BPE,eng_Latn,1.261,1.0,4.782,4.778,0.0,27621,21901,132096
+Qwen2.5 Byte-Level BPE,hin_Deva,4.757,4.49,2.764,1.075,0.0,121973,25643,337094
+Qwen2.5 Byte-Level BPE,mar_Deva,6.703,4.693,2.786,1.044,0.0,127661,19046,355712
+Qwen2.5 Byte-Level BPE,npi_Deva,6.521,4.498,2.784,1.041,0.0,121958,18701,339472
+Qwen2.5 Byte-Level BPE,ben_Beng,7.116,5.104,2.483,0.93,0.0,138814,19506,344682
+Qwen2.5 Byte-Level BPE,asm_Beng,7.713,5.477,2.252,0.847,0.0,148770,19289,335076
+Qwen2.5 Byte-Level BPE,guj_Gujr,8.911,6.857,1.779,0.679,0.0,186119,20886,331068
+Qwen2.5 Byte-Level BPE,pan_Guru,7.758,7.4,1.712,0.664,0.0,200987,25906,344172
+Qwen2.5 Byte-Level BPE,ory_Orya,13.654,9.893,1.349,0.503,0.0,267893,19620,361459
+Qwen2.5 Byte-Level BPE,tam_Taml,10.064,6.232,2.497,0.913,0.0,168828,16775,421641
+Qwen2.5 Byte-Level BPE,tel_Telu,11.406,7.146,1.831,0.686,0.0,193195,16938,353711
+Qwen2.5 Byte-Level BPE,kan_Knda,11.876,7.042,1.964,0.722,0.0,191209,16100,375480
+Qwen2.5 Byte-Level BPE,mal_Mlym,13.368,7.351,2.063,0.748,0.0,199583,14930,411753
+Qwen3.5 Byte-Level BPE,eng_Latn,1.257,1.0,4.798,4.794,0.0,27530,21901,132096
+Qwen3.5 Byte-Level BPE,hin_Deva,2.159,2.038,6.088,2.367,0.0,55374,25643,337094
+Qwen3.5 Byte-Level BPE,mar_Deva,3.326,2.331,5.616,2.104,0.0,63343,19046,355712
+Qwen3.5 Byte-Level BPE,npi_Deva,3.242,2.234,5.599,2.093,0.0,60628,18701,339472
+Qwen3.5 Byte-Level BPE,ben_Beng,3.078,2.208,5.742,2.15,0.0,60032,19506,344682
+Qwen3.5 Byte-Level BPE,asm_Beng,4.224,3.005,4.112,1.546,0.0,81485,19289,335076
+Qwen3.5 Byte-Level BPE,guj_Gujr,4.05,3.12,3.913,1.494,0.0,84598,20886,331068
+Qwen3.5 Byte-Level BPE,pan_Guru,4.058,3.878,3.274,1.269,0.0,105131,25906,344172
+Qwen3.5 Byte-Level BPE,ory_Orya,5.448,3.949,3.381,1.261,0.0,106897,19620,361459
+Qwen3.5 Byte-Level BPE,tam_Taml,4.245,2.633,5.92,2.164,0.0,71218,16775,421641
+Qwen3.5 Byte-Level BPE,tel_Telu,4.631,2.9,4.51,1.689,0.0,78432,16938,353711
+Qwen3.5 Byte-Level BPE,kan_Knda,5.319,3.157,4.385,1.613,0.0,85636,16100,375480
+Qwen3.5 Byte-Level BPE,mal_Mlym,5.613,3.089,4.914,1.782,0.0,83800,14930,411753
+Gemma-2 SentencePiece,eng_Latn,1.234,1.0,4.886,4.881,0.0,27036,21901,132096
+Gemma-2 SentencePiece,hin_Deva,1.965,1.888,6.69,2.601,0.0,50388,25643,337094
+Gemma-2 SentencePiece,mar_Deva,3.212,2.295,5.815,2.178,0.0,61170,19046,355712
+Gemma-2 SentencePiece,npi_Deva,3.079,2.159,5.896,2.204,0.0,57580,18701,339472
+Gemma-2 SentencePiece,ben_Beng,3.722,2.726,4.747,1.777,0.0,72610,19506,344682
+Gemma-2 SentencePiece,asm_Beng,4.526,3.282,3.838,1.443,0.06,87303,19289,335076
+Gemma-2 SentencePiece,guj_Gujr,3.903,3.062,4.061,1.551,0.0,81522,20886,331068
+Gemma-2 SentencePiece,pan_Guru,3.374,3.281,3.937,1.526,0.0,87412,25906,344172
+Gemma-2 SentencePiece,ory_Orya,6.873,5.078,2.68,1.0,0.78,134856,19620,361459
+Gemma-2 SentencePiece,tam_Taml,4.188,2.644,6.002,2.194,0.0,70251,16775,421641
+Gemma-2 SentencePiece,tel_Telu,4.576,2.917,4.564,1.71,0.0,77500,16938,353711
+Gemma-2 SentencePiece,kan_Knda,5.556,3.359,4.197,1.544,0.0,89454,16100,375480
+Gemma-2 SentencePiece,mal_Mlym,5.875,3.291,4.694,1.703,0.0,87715,14930,411753
+Gemma-4 SentencePiece,eng_Latn,1.238,1.0,4.872,4.867,0.0,27114,21901,132096
+Gemma-4 SentencePiece,hin_Deva,1.386,1.323,9.486,3.689,0.0,35537,25643,337094
+Gemma-4 SentencePiece,mar_Deva,1.996,1.418,9.357,3.505,0.0,38016,19046,355712
+Gemma-4 SentencePiece,npi_Deva,2.216,1.546,8.19,3.062,0.0,41449,18701,339472
+Gemma-4 SentencePiece,ben_Beng,1.683,1.223,10.497,3.93,0.0,32836,19506,344682
+Gemma-4 SentencePiece,asm_Beng,2.819,2.038,6.161,2.316,0.04,54385,19289,335076
+Gemma-4 SentencePiece,guj_Gujr,2.415,1.884,6.563,2.506,0.01,50443,20886,331068
+Gemma-4 SentencePiece,pan_Guru,2.82,2.736,4.712,1.827,0.01,73045,25906,344172
+Gemma-4 SentencePiece,ory_Orya,4.852,3.574,3.797,1.416,1.06,95199,19620,361459
+Gemma-4 SentencePiece,tam_Taml,2.374,1.487,10.586,3.87,0.0,39830,16775,421641
+Gemma-4 SentencePiece,tel_Telu,2.844,1.809,7.344,2.751,1.0,48164,16938,353711
+Gemma-4 SentencePiece,kan_Knda,3.245,1.951,7.186,2.644,0.0,52251,16100,375480
+Gemma-4 SentencePiece,mal_Mlym,3.357,1.867,8.216,2.98,0.0,50113,14930,411753
+Liquid LFM-3,eng_Latn,1.259,1.0,4.792,4.788,0.0,27564,21901,132096
+Liquid LFM-3,hin_Deva,2.695,2.536,4.878,1.897,0.0,69111,25643,337094
+Liquid LFM-3,mar_Deva,3.948,2.753,4.731,1.772,0.0,75195,19046,355712
+Liquid LFM-3,npi_Deva,3.695,2.54,4.913,1.836,0.0,69102,18701,339472
+Liquid LFM-3,ben_Beng,4.021,2.875,4.395,1.645,0.0,78428,19506,344682
+Liquid LFM-3,asm_Beng,5.233,3.707,3.319,1.248,0.0,100948,19289,335076
+Liquid LFM-3,guj_Gujr,3.543,2.712,4.474,1.709,0.0,73997,20886,331068
+Liquid LFM-3,pan_Guru,3.627,3.446,3.663,1.42,0.0,93955,25906,344172
+Liquid LFM-3,ory_Orya,4.86,3.508,3.79,1.414,0.0,95363,19620,361459
+Liquid LFM-3,tam_Taml,5.209,3.215,4.825,1.764,0.0,87381,16775,421641
+Liquid LFM-3,tel_Telu,4.867,3.037,4.291,1.607,0.0,82439,16938,353711
+Liquid LFM-3,kan_Knda,5.327,3.145,4.378,1.611,0.0,85760,16100,375480
+Liquid LFM-3,mal_Mlym,6.019,3.295,4.582,1.662,0.0,89859,14930,411753
+Multilingual Unigram LM (XLM-RoBERTa),eng_Latn,1.4,1.0,4.308,4.304,0.0,30661,21901,132096
+Multilingual Unigram LM (XLM-RoBERTa),hin_Deva,1.491,1.254,8.819,3.429,0.0,38222,25643,337094
+Multilingual Unigram LM (XLM-RoBERTa),mar_Deva,1.96,1.223,9.529,3.57,0.0,37330,19046,355712
+Multilingual Unigram LM (XLM-RoBERTa),npi_Deva,1.844,1.13,9.843,3.68,0.0,34487,18701,339472
+Multilingual Unigram LM (XLM-RoBERTa),ben_Beng,2.161,1.381,8.178,3.062,0.0,42146,19506,344682
+Multilingual Unigram LM (XLM-RoBERTa),asm_Beng,2.997,1.903,5.797,2.179,0.0,57803,19289,335076
+Multilingual Unigram LM (XLM-RoBERTa),guj_Gujr,2.081,1.424,7.618,2.909,0.0,43458,20886,331068
+Multilingual Unigram LM (XLM-RoBERTa),pan_Guru,1.863,1.582,7.13,2.764,0.0,48273,25906,344172
+Multilingual Unigram LM (XLM-RoBERTa),ory_Orya,2.247,1.446,8.197,3.058,0.0,44095,19620,361459
+Multilingual Unigram LM (XLM-RoBERTa),tam_Taml,2.465,1.357,10.195,3.727,0.0,41357,16775,421641
+Multilingual Unigram LM (XLM-RoBERTa),tel_Telu,2.384,1.327,8.76,3.282,0.0,40377,16938,353711
+Multilingual Unigram LM (XLM-RoBERTa),kan_Knda,2.577,1.36,9.052,3.33,0.0,41482,16100,375480
+Multilingual Unigram LM (XLM-RoBERTa),mal_Mlym,2.826,1.38,9.758,3.539,0.0,42197,14930,411753
+Legacy Multilingual WordPiece (mBERT),eng_Latn,1.318,1.0,4.576,4.571,0.0,28868,21901,132096
+Legacy Multilingual WordPiece (mBERT),hin_Deva,1.986,1.782,6.621,2.574,0.0,50915,25643,337094
+Legacy Multilingual WordPiece (mBERT),mar_Deva,2.987,1.992,6.252,2.342,0.0,56898,19046,355712
+Legacy Multilingual WordPiece (mBERT),npi_Deva,2.914,1.907,6.23,2.329,0.0,54488,18701,339472
+Legacy Multilingual WordPiece (mBERT),ben_Beng,2.779,1.903,6.358,2.38,0.0,54212,19506,344682
+Legacy Multilingual WordPiece (mBERT),asm_Beng,3.855,2.611,4.506,1.694,0.0,74357,19289,335076
+Legacy Multilingual WordPiece (mBERT),guj_Gujr,3.275,2.4,4.84,1.848,0.0,68400,20886,331068
+Legacy Multilingual WordPiece (mBERT),pan_Guru,2.443,2.213,5.439,2.108,0.0,63282,25906,344172
+Legacy Multilingual WordPiece (mBERT),ory_Orya,1.148,0.788,16.049,5.987,0.0,22522,19620,361459
+Legacy Multilingual WordPiece (mBERT),tam_Taml,3.625,2.134,6.935,2.535,0.0,60801,16775,421641
+Legacy Multilingual WordPiece (mBERT),tel_Telu,3.607,2.147,5.79,2.169,0.0,61094,16938,353711
+Legacy Multilingual WordPiece (mBERT),kan_Knda,3.936,2.222,5.925,2.18,0.0,63368,16100,375480
+Legacy Multilingual WordPiece (mBERT),mal_Mlym,5.059,2.643,5.452,1.977,0.0,75530,14930,411753
+Indic-Specialized Baseline (IndicBERTv2),eng_Latn,1.236,1.0,4.878,4.874,0.0,27078,21901,132096
+Indic-Specialized Baseline (IndicBERTv2),hin_Deva,1.237,1.18,10.629,4.133,0.0,31715,25643,337094
+Indic-Specialized Baseline (IndicBERTv2),mar_Deva,1.49,1.055,12.538,4.697,0.0,28370,19046,355712
+Indic-Specialized Baseline (IndicBERTv2),npi_Deva,1.578,1.099,11.502,4.3,0.0,29515,18701,339472
+Indic-Specialized Baseline (IndicBERTv2),ben_Beng,1.409,1.021,12.542,4.696,0.0,27482,19506,344682
+Indic-Specialized Baseline (IndicBERTv2),asm_Beng,1.595,1.145,10.891,4.094,0.0,30766,19289,335076
+Indic-Specialized Baseline (IndicBERTv2),guj_Gujr,1.516,1.176,10.459,3.994,0.0,31654,20886,331068
+Indic-Specialized Baseline (IndicBERTv2),pan_Guru,1.338,1.286,9.933,3.851,0.0,34651,25906,344172
+Indic-Specialized Baseline (IndicBERTv2),ory_Orya,1.6,1.165,11.518,4.297,0.0,31383,19620,361459
+Indic-Specialized Baseline (IndicBERTv2),tam_Taml,1.695,1.058,14.826,5.42,0.0,28439,16775,421641
+Indic-Specialized Baseline (IndicBERTv2),tel_Telu,1.699,1.074,12.289,4.604,0.0,28783,16938,353711
+Indic-Specialized Baseline (IndicBERTv2),kan_Knda,1.846,1.102,12.633,4.648,0.0,29723,16100,375480
+Indic-Specialized Baseline (IndicBERTv2),mal_Mlym,2.002,1.109,13.779,4.997,0.0,29883,14930,411753

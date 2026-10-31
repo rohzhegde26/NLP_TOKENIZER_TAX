@@ -1,0 +1,19 @@
+{
+  "core_vocab_size": 32000,
+  "total_vocab_size": 130304,
+  "bank_offsets": {
+    "asm_Beng": 32000,
+    "ben_Beng": 40192,
+    "guj_Gujr": 48384,
+    "hin_Deva": 56576,
+    "kan_Knda": 64768,
+    "mal_Mlym": 72960,
+    "mar_Deva": 81152,
+    "npi_Deva": 89344,
+    "ory_Orya": 97536,
+    "pan_Guru": 105728,
+    "tam_Taml": 113920,
+    "tel_Telu": 122112
+  },
+  "bank_size": 8192
+}

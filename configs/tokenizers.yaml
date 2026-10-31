@@ -1,0 +1,62 @@
+tokenizers:
+  cl100k_base:
+    name: "OpenAI Legacy BPE (cl100k_base)"
+    type: "tiktoken"
+    identifier: "cl100k_base"
+    pricing_per_1k_tokens_usd: 0.0100
+
+  o200k_base:
+    name: "OpenAI Modern BPE (o200k_base)"
+    type: "tiktoken"
+    identifier: "o200k_base"
+    pricing_per_1k_tokens_usd: 0.0025
+
+  qwen2_5:
+    name: "Qwen2.5 Byte-Level BPE"
+    type: "huggingface"
+    identifier: "Qwen/Qwen2.5-1.5B"
+    pricing_per_1k_tokens_usd: 0.0002
+
+  qwen3_5:
+    name: "Qwen3.5 Byte-Level BPE"
+    type: "huggingface"
+    identifier: "ccore/Qwen3.5-4B-3D-Coder"
+    pricing_per_1k_tokens_usd: 0.0002
+
+  gemma_2:
+    name: "Gemma-2 SentencePiece"
+    type: "huggingface"
+    identifier: "unsloth/gemma-2-2b"
+    alt_identifier: "google/gemma-2-2b"
+    pricing_per_1k_tokens_usd: 0.0002
+
+  gemma_4:
+    name: "Gemma-4 SentencePiece"
+    type: "huggingface"
+    identifier: "google/gemma-4-E2B-it"
+    pricing_per_1k_tokens_usd: 0.0001
+
+  lfm_3:
+    name: "Liquid LFM-3"
+    type: "huggingface"
+    identifier: "LiquidAI/LFM3-1.7B"
+    pricing_per_1k_tokens_usd: 0.0002
+
+  xlm_roberta:
+    name: "Multilingual Unigram LM (XLM-RoBERTa)"
+    type: "huggingface"
+    identifier: "FacebookAI/xlm-roberta-base"
+    pricing_per_1k_tokens_usd: 0.0005
+
+  mbert:
+    name: "Legacy Multilingual WordPiece (mBERT)"
+    type: "huggingface"
+    identifier: "google-bert/bert-base-multilingual-cased"
+    pricing_per_1k_tokens_usd: 0.0005
+
+  indicbert_v2:
+    name: "Indic-Specialized Baseline (IndicBERTv2)"
+    type: "huggingface"
+    identifier: "ai4bharat/IndicBERTv2-MLM-only"
+    alt_identifier: "google/muril-base-cased"
+    pricing_per_1k_tokens_usd: 0.0005

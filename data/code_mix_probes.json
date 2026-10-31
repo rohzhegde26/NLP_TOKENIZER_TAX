@@ -1,0 +1,224 @@
+{
+  "code_mix_pairs": [
+    {
+      "language": "hin_Deva",
+      "name": "Hinglish",
+      "native": "आज का मौसम बहुत अच्छा है और मैं बाहर जाने की सोच रहा हूँ।",
+      "romanized": "Aaj ka mausam bahut achha hai aur main bahar jaane ki soch raha hoon.",
+      "category": "conversational"
+    },
+    {
+      "language": "hin_Deva",
+      "name": "Hinglish",
+      "native": "कृपया मुझे बताएं कि स्टेशन के लिए सबसे तेज़ रास्ता कौन सा है?",
+      "romanized": "Kripya mujhe batayein ki station ke liye sabse tez rasta kaun sa hai?",
+      "category": "navigational"
+    },
+    {
+      "language": "hin_Deva",
+      "name": "Hinglish",
+      "native": "क्या आप कल की बैठक में शामिल होने के लिए तैयार हैं?",
+      "romanized": "Kya aap kal ki meeting mein shaamil hone ke liye taiyar hain?",
+      "category": "business"
+    },
+    {
+      "language": "tam_Taml",
+      "name": "Tanglish",
+      "native": "இன்றைய வானிலை மிகவும் அழகாக இருக்கிறது மற்றும் நான் வெளியே செல்ல திட்டமிடுகிறேன்.",
+      "romanized": "Indraya vaanilai migavum azhagaaga irukkiradhu matrum naan veliye sella thittamittullaan.",
+      "category": "conversational"
+    },
+    {
+      "language": "tam_Taml",
+      "name": "Tanglish",
+      "native": "தயவுசெய்து எனக்கு ரயில் நிலையத்திற்கு மிக விரைவான பாதையை சொல்லுங்கள்.",
+      "romanized": "Dayavuseidhu enakku train station-kku miga viraivaana paadhaiyai sollungal.",
+      "category": "navigational"
+    },
+    {
+      "language": "tam_Taml",
+      "name": "Tanglish",
+      "native": "நாளை நடக்கும் சந்திப்பில் கலந்து கொள்ள நீங்கள் தயாரா?",
+      "romanized": "Naalai nadakkum meeting-la kalandhukolla neenga ready-aa?",
+      "category": "business"
+    },
+    {
+      "language": "kan_Knda",
+      "name": "Kanglish",
+      "native": "ಇವತ್ತಿನ ಹವಾಮಾನ ತುಂಬಾ ಚೆನ್ನಾಗಿದೆ ಮತ್ತು ನಾನು ಹೊರಗೆ ಹೋಗಲು ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ.",
+      "romanized": "Ivatthina havamana thumba chennagide mathu naanu horage hogalu yochisutthidene.",
+      "category": "conversational"
+    },
+    {
+      "language": "kan_Knda",
+      "name": "Kanglish",
+      "native": "ದಯವಿಟ್ಟು ನನಗೆ ರೈಲ್ವೆ ನಿಲ್ದಾಣಕ್ಕೆ ಹೋಗುವ ಅತ್ಯಂತ ವೇಗದ ಮಾರ್ಗವನ್ನು ತಿಳಿಸಿ.",
+      "romanized": "Dayavittu nanage railway station-ge hoguva atyanta vegada margavannu thilisi.",
+      "category": "navigational"
+    },
+    {
+      "language": "kan_Knda",
+      "name": "Kanglish",
+      "native": "ನಾಳೆ ನಡೆಯುವ ಸಭೆಯಲ್ಲಿ ಭಾಗವಹಿಸಲು ನೀವು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+      "romanized": "Naale nadeyuva meeting-nalli bhagavahisalu neevu ready iddeera?",
+      "category": "business"
+    },
+    {
+      "language": "tel_Telu",
+      "name": "Tenglish",
+      "native": "ఈ రోజు వాతావరణం చాలా బాగుంది మరియు నేను బయటకు వెళ్లాలని ఆలోచిస్తున్నాను.",
+      "romanized": "Ee roju vatavaranam chala bagundi mariyu nenu bayataku vellalani alochistunnanu.",
+      "category": "conversational"
+    },
+    {
+      "language": "tel_Telu",
+      "name": "Tenglish",
+      "native": "దయచేసి నాకు రైల్వే స్టేషన్‌కు వెళ్లే వేగవంతమైన మార్గాన్ని చెప్పండి.",
+      "romanized": "Dayachesi naaku railway station-ki velle vegavantamaina marganni cheppandi.",
+      "category": "navigational"
+    },
+    {
+      "language": "ben_Beng",
+      "name": "Benglish",
+      "native": "আজকের আবহাওয়া খুব সুন্দর এবং আমি বাইরে যাওয়ার কথা ভাবছি।",
+      "romanized": "Aajker aabhawa khub shundor ebong aami baire jaowar kotha bhabchi.",
+      "category": "conversational"
+    },
+    {
+      "language": "ben_Beng",
+      "name": "Benglish",
+      "native": "দয়া করে আমাকে রেলস্টেশনে যাওয়ার দ্রুততম পথটি বলুন।",
+      "romanized": "Doya kore amake railway station-e jawar drutotomo pothti bolun.",
+      "category": "navigational"
+    },
+    {
+      "language": "mal_Mlym",
+      "name": "Manglish",
+      "native": "ഇന്നത്തെ കാലാവസ്ഥ വളരെ മനോഹരമാണ് ഞാൻ പുറത്തേക്ക് പോകാൻ ആഗ്രഹിക്കുന്നു.",
+      "romanized": "Innathe kaalavastha valare manoharamaanu njaan purathekku pokaan aagrahikkunnu.",
+      "category": "conversational"
+    }
+  ],
+  "conversational_indic": [
+    {"language": "hin_Deva", "text": "अरे भाई, क्या चल रहा है? सब ठीक ठाक?"},
+    {"language": "hin_Deva", "text": "चलो यार, चाय पीने चलते हैं नुक्कड़ पर।"},
+    {"language": "hin_Deva", "text": "आज ऑफिस में काम बहुत ज्यादा था, थक गया हूँ।"},
+    {"language": "tam_Taml", "text": "மச்சி, என்ன பண்ற? எல்லாம் நல்லா போகுதா?"},
+    {"language": "tam_Taml", "text": "வா மச்சான், கடைக்கு போய் டீ குடிக்கலாம்."},
+    {"language": "tam_Taml", "text": "இன்னைக்கு வேலை ரொம்ப அதிகம், பயங்கர டயர்டா இருக்கு."},
+    {"language": "kan_Knda", "text": "ಮಗಾ, ಏನ್ ಸಮಾಚಾರ? ಎಲ್ಲ ಆರಾಮಾಗಿದ್ಯಾ?"},
+    {"language": "kan_Knda", "text": "ಬನ್ನಿ ಗುರು, ಟೀ ಕುಡಿಯೋಕೆ ಹೋಗೋಣ."},
+    {"language": "kan_Knda", "text": "ಇವತ್ತು ಕೆಲಸ ತುಂಬಾ ಜಾಸ್ತಿ ಇತ್ತು, ತುಂಬಾ ಸುಸ್ತಾಗಿದೆ."},
+    {"language": "tel_Telu", "text": "ఏంటి బ్రో, ఏం విశేషాలు? అంతా బాగుందా?"},
+    {"language": "tel_Telu", "text": "పద బాస్, టీ తాగడానికి వెళ్దాం."},
+    {"language": "tel_Telu", "text": "ఈరోజు ఆఫీస్‌లో చాలా పని ఉంది, బాగా అలసిపోయాను."},
+    {"language": "ben_Beng", "text": "কিরে বন্ধু, কি খবর? সব ঠিকঠাক তো?"},
+    {"language": "ben_Beng", "text": "চল ভাই, চায়ের দোকানে গিয়ে এক কাপ চা খাই."},
+    {"language": "ben_Beng", "text": "আজকের কাজটা খুব চাপের ছিল, প্রচণ্ড ক্লান্ত লাগছে."},
+    {"language": "mar_Deva", "text": "काय मग दोस्ता, काय चाललंय? सगळं ठीक ना?"},
+    {"language": "guj_Gujr", "text": "કેમ છો ભાઈ, શું ચાલે છે? બધું બરાબર?"},
+    {"language": "pan_Guru", "text": "ਕੀ ਹਾਲ ਹੈ ਵੀਰੇ, ਸਭ ਠੀਕ ਠਾਕ ਹੈ?"},
+    {"language": "ory_Orya", "text": "ଭାଇ କଣ ଖବର? ସବୁ ଠିକଠାକ ଅଛି ତ?"},
+    {"language": "mal_Mlym", "text": "അളിയാ, എന്തൊക്കെയുണ്ട് വിശേഷം? എല്ലാം ശരിയല്ലേ?"}
+  ],
+  "morphological_dravidian_test": [
+    {
+      "language": "kan_Knda",
+      "word": "ಮನೆಗಳಲ್ಲಿ",
+      "stem": "ಮನೆ",
+      "suffixes": ["ಗಳು", "ಅಲ್ಲಿ"],
+      "gold_boundaries": ["ಮನೆ", "ಗಳಲ್ಲಿ"]
+    },
+    {
+      "language": "kan_Knda",
+      "word": "ಪುಸ್ತಕಗಳಿಂದ",
+      "stem": "ಪುಸ್ತಕ",
+      "suffixes": ["ಗಳು", "ಇಂದ"],
+      "gold_boundaries": ["ಪುಸ್ತಕ", "ಗಳಿಂದ"]
+    },
+    {
+      "language": "kan_Knda",
+      "word": "ಮರಗಳನ್ನು",
+      "stem": "ಮರ",
+      "suffixes": ["ಗಳು", "ಅನ್ನು"],
+      "gold_boundaries": ["ಮರ", "ಗಳನ್ನು"]
+    },
+    {
+      "language": "kan_Knda",
+      "word": "ಊರಿಗೆ",
+      "stem": "ಊರು",
+      "suffixes": ["ಗೆ"],
+      "gold_boundaries": ["ಊರಿ", "ಗೆ"]
+    },
+    {
+      "language": "tam_Taml",
+      "word": "வீடுகளில்",
+      "stem": "வீடு",
+      "suffixes": ["கள்", "இல்"],
+      "gold_boundaries": ["வீடு", "களில்"]
+    },
+    {
+      "language": "tam_Taml",
+      "word": "புத்தகங்களை",
+      "stem": "புத்தகம்",
+      "suffixes": ["கள்", "ஐ"],
+      "gold_boundaries": ["புத்தகங்", "களை"]
+    },
+    {
+      "language": "tam_Taml",
+      "word": "மரத்திலிருந்து",
+      "stem": "மரம்",
+      "suffixes": ["இல்", "இருந்து"],
+      "gold_boundaries": ["மரத்திலிரு", "ந்து"]
+    },
+    {
+      "language": "tam_Taml",
+      "word": "ஊருக்கு",
+      "stem": "ஊர்",
+      "suffixes": ["உக்கு"],
+      "gold_boundaries": ["ஊரு", "க்கு"]
+    },
+    {
+      "language": "tel_Telu",
+      "word": "ఇండ్లలో",
+      "stem": "ఇల్లు",
+      "suffixes": ["లు", "లో"],
+      "gold_boundaries": ["ఇండ్ల", "లో"]
+    },
+    {
+      "language": "tel_Telu",
+      "word": "పుస్తకాలతో",
+      "stem": "పుస్తకం",
+      "suffixes": ["లు", "తో"],
+      "gold_boundaries": ["పుస్తకాల", "తో"]
+    },
+    {
+      "language": "tel_Telu",
+      "word": "చెట్లనుండి",
+      "stem": "చెట్టు",
+      "suffixes": ["లు", "నుండి"],
+      "gold_boundaries": ["చెట్ల", "నుండి"]
+    },
+    {
+      "language": "mal_Mlym",
+      "word": "വീടുകളിൽ",
+      "stem": "വീട്",
+      "suffixes": ["കൾ", "ഇൽ"],
+      "gold_boundaries": ["വീടുകളി", "ൽ"]
+    },
+    {
+      "language": "mal_Mlym",
+      "word": "പുസ്തകങ്ങളിൽനിന്ന്",
+      "stem": "പുസ്തകം",
+      "suffixes": ["കൾ", "ഇൽനിന്ന്"],
+      "gold_boundaries": ["പുസ്തകങ്ങളിൽ", "നിന്ന്"]
+    },
+    {
+      "language": "mal_Mlym",
+      "word": "മരങ്ങളെ",
+      "stem": "മരം",
+      "suffixes": ["കൾ", "എ"],
+      "gold_boundaries": ["മരങ്ങ", "ളെ"]
+    }
+  ]
+}

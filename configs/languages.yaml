@@ -1,0 +1,130 @@
+languages:
+  eng_Latn:
+    name: "English"
+    family: "Germanic"
+    script: "Latin"
+    script_code: "Latn"
+    is_indic: false
+    unicode_range: null
+    block_base: null
+    keywords: ["english", "eng"]
+
+  hin_Deva:
+    name: "Hindi"
+    family: "Indo-Aryan"
+    script: "Devanagari"
+    script_code: "Deva"
+    is_indic: true
+    unicode_range: [0x0900, 0x097F]
+    block_base: 0x0900
+    keywords: ["hindi", "hinglish", "hindustani"]
+
+  mar_Deva:
+    name: "Marathi"
+    family: "Indo-Aryan"
+    script: "Devanagari"
+    script_code: "Deva"
+    is_indic: true
+    unicode_range: [0x0900, 0x097F]
+    block_base: 0x0900
+    keywords: ["marathi", "marathiglish"]
+
+  npi_Deva:
+    name: "Nepali"
+    family: "Indo-Aryan"
+    script: "Devanagari"
+    script_code: "Deva"
+    is_indic: true
+    unicode_range: [0x0900, 0x097F]
+    block_base: 0x0900
+    keywords: ["nepali", "nepalese"]
+
+  ben_Beng:
+    name: "Bengali"
+    family: "Indo-Aryan"
+    script: "Bengali"
+    script_code: "Beng"
+    is_indic: true
+    unicode_range: [0x0980, 0x09FF]
+    block_base: 0x0980
+    keywords: ["bengali", "bangla", "banglish"]
+
+  asm_Beng:
+    name: "Assamese"
+    family: "Indo-Aryan"
+    script: "Bengali"
+    script_code: "Beng"
+    is_indic: true
+    unicode_range: [0x0980, 0x09FF]
+    block_base: 0x0980
+    keywords: ["assamese", "asamiya"]
+
+  guj_Gujr:
+    name: "Gujarati"
+    family: "Indo-Aryan"
+    script: "Gujarati"
+    script_code: "Gujr"
+    is_indic: true
+    unicode_range: [0x0A80, 0x0AFF]
+    block_base: 0x0A80
+    keywords: ["gujarati", "gujlish"]
+
+  pan_Guru:
+    name: "Punjabi"
+    family: "Indo-Aryan"
+    script: "Gurmukhi"
+    script_code: "Guru"
+    is_indic: true
+    unicode_range: [0x0A00, 0x0A7F]
+    block_base: 0x0A00
+    keywords: ["punjabi", "gurmukhi"]
+
+  ory_Orya:
+    name: "Odia"
+    family: "Indo-Aryan"
+    script: "Odia"
+    script_code: "Orya"
+    is_indic: true
+    unicode_range: [0x0B00, 0x0B7F]
+    block_base: 0x0B00
+    keywords: ["odia", "oriya"]
+
+  tam_Taml:
+    name: "Tamil"
+    family: "Dravidian"
+    script: "Tamil"
+    script_code: "Taml"
+    is_indic: true
+    unicode_range: [0x0B80, 0x0BFF]
+    block_base: 0x0B80
+    keywords: ["tamil", "tanglish"]
+
+  tel_Telu:
+    name: "Telugu"
+    family: "Dravidian"
+    script: "Telugu"
+    script_code: "Telu"
+    is_indic: true
+    unicode_range: [0x0C00, 0x0C7F]
+    block_base: 0x0C00
+    keywords: ["telugu", "tenglish"]
+
+  kan_Knda:
+    name: "Kannada"
+    family: "Dravidian"
+    script: "Kannada"
+    script_code: "Knda"
+    is_indic: true
+    unicode_range: [0x0C80, 0x0CFF]
+    block_base: 0x0C80
+    keywords: ["kannada", "kanglish"]
+
+  mal_Mlym:
+    name: "Malayalam"
+    family: "Dravidian"
+    script: "Malayalam"
+    script_code: "Mlym"
+    is_indic: true
+    unicode_range: [0x0D00, 0x0D7F]
+    block_base: 0x0D00
+    keywords: ["malayalam", "manglish"]

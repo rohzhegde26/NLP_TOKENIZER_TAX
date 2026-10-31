@@ -1,0 +1,11 @@
+tokenizer,mean_indic_parity,gini_all,gini_indic,mean_bytes_per_token,mean_single_byte_rate_pct
+OpenAI Legacy BPE (cl100k_base),7.451,0.2091,0.1569,2.153,45.93
+OpenAI Modern BPE (o200k_base),2.183,0.1837,0.1615,6.611,6.84
+Qwen2.5 Byte-Level BPE,6.348,0.1832,0.1309,2.388,0.0
+Qwen3.5 Byte-Level BPE,2.878,0.1525,0.1156,4.789,0.0
+Gemma-2 SentencePiece,2.999,0.1702,0.134,4.77,0.06
+Gemma-4 SentencePiece,1.905,0.1843,0.1689,7.459,0.16
+Liquid LFM-3,3.064,0.1127,0.0693,4.387,0.0
+Multilingual Unigram LM (XLM-RoBERTa),1.397,0.0797,0.0678,8.245,0.0
+Legacy Multilingual WordPiece (mBERT),2.062,0.1397,0.1132,6.536,0.0
+Indic-Specialized Baseline (IndicBERTv2),1.123,0.0369,0.0339,11.417,0.0
