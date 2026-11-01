@@ -39,7 +39,7 @@
       "language": "tam_Taml",
       "name": "Tanglish",
       "native": "நாளை நடக்கும் சந்திப்பில் கலந்து கொள்ள நீங்கள் தயாரா?",
-      "romanized": "Naalai nadakkum meeting-la kalandhukolla neenga ready-aa?",
+      "romanized": "Naalai nadakkum meeting-la kalandhu kolla neenga ready-aa?",
       "category": "business"
     },
     {
@@ -116,10 +116,20 @@
     {"language": "ben_Beng", "text": "চল ভাই, চায়ের দোকানে গিয়ে এক কাপ চা খাই."},
     {"language": "ben_Beng", "text": "আজকের কাজটা খুব চাপের ছিল, প্রচণ্ড ক্লান্ত লাগছে."},
     {"language": "mar_Deva", "text": "काय मग दोस्ता, काय चाललंय? सगळं ठीक ना?"},
+    {"language": "mar_Deva", "text": "चल मित्रा, टपरीवर जाऊन गरमागरम चहा घेऊया."},
+    {"language": "mar_Deva", "text": "आज ऑफिसमध्ये कामाचा खूप ताण होता, खूप थकलो आहे."},
     {"language": "guj_Gujr", "text": "કેમ છો ભાઈ, શું ચાલે છે? બધું બરાબર?"},
+    {"language": "guj_Gujr", "text": "ચાલો યાર, નાકે જઈને ગરમાગરમ ચા પીએ."},
+    {"language": "guj_Gujr", "text": "આજે ઓફિસમાં કામનો ઘણો ભાર હતો, ખૂબ થાકી ગયો છું."},
     {"language": "pan_Guru", "text": "ਕੀ ਹਾਲ ਹੈ ਵੀਰੇ, ਸਭ ਠੀਕ ਠਾਕ ਹੈ?"},
+    {"language": "pan_Guru", "text": "ਚੱਲ ਯਾਰ, ਦੁਕਾਨ ਤੇ ਚੱਲ ਕੇ ਚਾਹ ਪੀਂਦੇ ਹਾਂ।"},
+    {"language": "pan_Guru", "text": "ਅੱਜ ਦਫ਼ਤਰ ਵਿੱਚ ਕੰਮ ਬਹੁਤ ਜ਼ਿਆਦਾ ਸੀ, ਕਾਫ਼ੀ ਥੱਕ ਗਿਆ ਹਾਂ।"},
     {"language": "ory_Orya", "text": "ଭାଇ କଣ ଖବର? ସବୁ ଠିକଠାକ ଅଛି ତ?"},
-    {"language": "mal_Mlym", "text": "അളിയാ, എന്തൊക്കെയുണ്ട് വിശേഷം? എല്ലാം ശരിയല്ലേ?"}
+    {"language": "ory_Orya", "text": "ଚାଲ ସାଙ୍ଗ, ଦୋକାନକୁ ଯାଇ ଗୋଟିଏ କପ୍ ଚା ପିଇବା।"},
+    {"language": "ory_Orya", "text": "ଆଜି ଅଫିସରେ ବହୁତ କାମ ଥିଲା, ଭীଷଣ ଥକି ଯାଇଛି।"},
+    {"language": "mal_Mlym", "text": "അളിയാ, എന്തൊക്കെയുണ്ട് വിശേഷം? എല്ലാം ശരിയല്ലേ?"},
+    {"language": "mal_Mlym", "text": "വാ സുഹൃത്തേ, കടയിൽ പോയി ഒരു ചായ കുടിക്കാം."},
+    {"language": "mal_Mlym", "text": "ഇന്ന് ഓഫീസിൽ ജോലി വളരെ കൂടുതലായിരുന്നു, നന്നായി തളർന്നു."}
   ],
   "morphological_dravidian_test": [
     {

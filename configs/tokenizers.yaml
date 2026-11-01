@@ -20,7 +20,7 @@ tokenizers:
   qwen3_5:
     name: "Qwen3.5 Byte-Level BPE"
     type: "huggingface"
-    identifier: "ccore/Qwen3.5-4B-3D-Coder"
+    identifier: "Qwen/Qwen3.5-4B"
     pricing_per_1k_tokens_usd: 0.0002
 
   gemma_2:

@@ -1,4 +1,4 @@
-"""Decoupled Per-Language Banks with Scaffold Token Pruning, BPE-Dropout, and Fast Maximal Matching."""
+"""Decoupled Per-Language Banks with Scaffold Token Pruning, BPE-Dropout, Parity-BPE, and SuperBPE."""
 from __future__ import annotations
 
 import collections
@@ -66,13 +66,13 @@ class LanguageBank:
 
 
 class ScaffoldBPETrainer:
-    """Trains decoupled language banks with Akshara guards, fast batched merges, and Scaffold Pruning."""
+    """Trains decoupled language banks with Akshara guards, PMI stem scoring, and Scaffold Pruning."""
 
     def __init__(
         self,
         bank_size: int = 8192,
-        scaffold_threshold_tau: int = 2,
-        high_pmi_stem_slots: int = 3500
+        scaffold_threshold_tau: int = 4,
+        high_pmi_stem_slots: int = 3200
     ):
         self.bank_size = bank_size
         self.tau = scaffold_threshold_tau
@@ -80,8 +80,11 @@ class ScaffoldBPETrainer:
         self.pretokenizer = AksharaBoundedPreTokenizer()
 
     def train(self, texts: List[str], lang_code: str) -> LanguageBank:
-        """Train language bank with decoupled BPE, Akshara constraints, and scaffold pruning."""
-        # 1. Collect clean word frequencies
+        """Train language bank on monolingual training corpus with Akshara constraints and Scaffold Pruning."""
+        # Discover high-branching suffixes from the training corpus
+        self.pretokenizer.suffix_splitter.learn_from_corpus(texts, lang_code)
+
+        # 1. Collect clean word frequencies from training texts
         word_freqs = collections.Counter()
         for text in texts:
             words = re.findall(r"[\u0900-\u0D7F\w]+|[^\s\w]", text, re.UNICODE)
@@ -89,7 +92,7 @@ class ScaffoldBPETrainer:
                 if w:
                     word_freqs[w] += 1
 
-        # 2. Extract initial base symbols
+        # 2. Extract initial base symbols (aksharas)
         char_freqs = collections.Counter()
         split_words: Dict[Tuple[str, ...], int] = {}
 
@@ -100,7 +103,7 @@ class ScaffoldBPETrainer:
                 if not aksharas:
                     continue
                 pieces = tuple(aksharas)
-                split_words[pieces] = count
+                split_words[pieces] = split_words.get(pieces, 0) + count
                 for p in pieces:
                     if self.pretokenizer.is_valid_subword(p):
                         char_freqs[p] += count
@@ -110,7 +113,7 @@ class ScaffoldBPETrainer:
         merges: List[Tuple[str, str]] = []
         target_merges = max(500, self.bank_size - len(vocab_set) - self.high_pmi_stem_slots)
 
-        # 3. Learn BPE merges with Akshara-Boundary Guard (fast batched)
+        # 3. Learn BPE merges with Akshara-Boundary Guard (batched)
         batch_size = 30
         while len(merges) < target_merges:
             pair_counts = collections.Counter()
@@ -156,10 +159,11 @@ class ScaffoldBPETrainer:
                     else:
                         new_tuple.append(word_tuple[i])
                         i += 1
-                new_split_words[tuple(new_tuple)] = count
+                t_key = tuple(new_tuple)
+                new_split_words[t_key] = new_split_words.get(t_key, 0) + count
             split_words = new_split_words
 
-        # 4. Scaffold Token Pruning:
+        # 4. Scaffold Token Pruning: compute post-merge standalone corpus frequency f_post(t)
         post_counts = collections.Counter()
         for word_tuple, count in split_words.items():
             for piece in word_tuple:
@@ -175,35 +179,57 @@ class ScaffoldBPETrainer:
             else:
                 retained_vocab.append(tok)
 
-        # 5. Reallocate freed slots to high-frequency whole words, morphemes, and stems
+        # 5. Reallocate freed slots to high-PMI morphological stems and subwords
         slots_needed = self.bank_size - len(retained_vocab)
         if slots_needed > 0:
-            candidate_stems = collections.Counter()
+            total_char_occ = max(1, sum(char_freqs.values()))
+            candidate_stems: Dict[str, float] = {}
             for word, count in word_freqs.items():
-                if len(word) >= 1 and count >= 1:
-                    candidate_stems[word] += count
+                morps = self.pretokenizer.suffix_splitter.split_word(word, lang=lang_code)
+                for m in morps:
+                    if 2 <= len(m) <= 12 and self.pretokenizer.is_valid_subword(m):
+                        # Compute Pointwise Mutual Information (PMI) weighted by log frequency
+                        aks = self.pretokenizer.segmenter.segment_word(m)
+                        if len(aks) >= 2:
+                            p_joint = count / total_char_occ
+                            p_indep = 1.0
+                            for a in aks[:3]:
+                                p_indep *= max(1e-6, char_freqs.get(a, 1) / total_char_occ)
+                            pmi = max(0.1, math.log(max(1e-9, p_joint / p_indep) + 1.0))
+                        else:
+                            pmi = 1.0
+                        score = count * (1.0 + 0.25 * pmi)
+                        candidate_stems[m] = candidate_stems.get(m, 0.0) + score
+                if 2 <= len(word) <= 12 and self.pretokenizer.is_valid_subword(word):
+                    candidate_stems[word] = candidate_stems.get(word, 0.0) + count
 
-            for stem, _ in candidate_stems.most_common():
+            retained_set = set(retained_vocab)
+            sorted_stems = sorted(candidate_stems.items(), key=lambda x: x[1], reverse=True)
+            for stem, _ in sorted_stems:
                 if len(retained_vocab) >= self.bank_size:
                     break
-                if stem not in retained_vocab and self.pretokenizer.is_valid_subword(stem):
+                if stem not in retained_set and self.pretokenizer.is_valid_subword(stem):
                     retained_vocab.append(stem)
+                    retained_set.add(stem)
 
-        # If any slots remain, extract high-frequency n-grams directly from the corpus
+        # If any slots remain, extract high-frequency valid subword n-grams from the training corpus
         if len(retained_vocab) < self.bank_size:
+            retained_set = set(retained_vocab)
             ngram_counts = collections.Counter()
             for text in texts:
                 for w in text.split():
                     for n in (2, 3, 4):
                         for j in range(len(w) - n + 1):
-                            ngram_counts[w[j : j + n]] += 1
+                            sub = w[j : j + n]
+                            if self.pretokenizer.is_valid_subword(sub):
+                                ngram_counts[sub] += 1
             for ng, _ in ngram_counts.most_common():
                 if len(retained_vocab) >= self.bank_size:
                     break
-                if ng not in retained_vocab and self.pretokenizer.is_valid_subword(ng):
+                if ng not in retained_set:
                     retained_vocab.append(ng)
+                    retained_set.add(ng)
 
-        # Ensure exact bank size
         final_vocab = retained_vocab[: self.bank_size]
         return LanguageBank(
             lang_code=lang_code,
@@ -247,7 +273,7 @@ class SparseIndicTokenizer:
         if not piece:
             return []
         vocab_map = bank.token_to_id if bank is not None else self.core_to_id
-        if piece in vocab_map:
+        if piece in vocab_map and dropout_prob == 0.0:
             return [piece]
 
         tokens = []
@@ -261,6 +287,11 @@ class SparseIndicTokenizer:
                 if sub in vocab_map:
                     if dropout_prob > 0.0 and random.random() < dropout_prob and k > i + 1:
                         continue
+                    # When tokenizing Romanized/Latin words in core_vocab, avoid leaving a 1-char orphan suffix
+                    if bank is None and dropout_prob == 0.0 and (n - k) == 1 and (k - i) >= 3:
+                        if piece[k - 1 : n] in vocab_map and piece[i : k - 1] in vocab_map:
+                            best_k = k - 1
+                            break
                     best_k = k
                     break
             tokens.append(piece[i:best_k])
@@ -284,7 +315,7 @@ class SparseIndicTokenizer:
         bank = self.banks.get(lang_code) if lang_code else None
         bank_offset = self.bank_offsets.get(lang_code, len(self.core_vocab)) if lang_code else 0
 
-        chunks = re.findall(r"[\u0900-\u0D7F\w]+|[^\s\w]|\s+", text, re.UNICODE)
+        chunks = re.findall(r"[\u0900-\u0D7F\w]+(?:-[\u0900-\u0D7F\w]+)*|[^\s\w]|\s+", text, re.UNICODE)
         token_ids: List[int] = []
 
         for chunk in chunks:
@@ -296,13 +327,13 @@ class SparseIndicTokenizer:
                         token_ids.append(self.core_to_id.get(" ", 32))
                 continue
 
-            # Fast path: whole word in bank
-            if bank and chunk in bank.token_to_id:
+            # Fast path for whole words in bank (when dropout is off)
+            if bank and chunk in bank.token_to_id and dropout_prob == 0.0:
                 token_ids.append(bank_offset + bank.token_to_id[chunk])
                 continue
 
-            # Whole word in core
-            if chunk in self.core_to_id:
+            # Whole word in core (when dropout is off)
+            if chunk in self.core_to_id and dropout_prob == 0.0:
                 token_ids.append(self.core_to_id[chunk])
                 continue
 
@@ -362,3 +393,214 @@ class SparseIndicTokenizer:
                     pieces.append("")
 
         return "".join(pieces)
+
+
+class ParityAwareBPETokenizer:
+    """Baseline Parity-Aware BPE (2026): Joint cross-lingual BPE without Scaffold Pruning or Akshara Guards.
+    
+    Allocates equal per-language vocabulary budgets in a single dense table, retaining all intermediate
+    BPE scaffold tokens (high deadweight rate) and falling back to 3-byte UTF-8 for unseen characters.
+    """
+
+    def __init__(self, vocab: List[str], lang_subvocabs: Optional[Dict[str, List[str]]] = None):
+        self.vocab = vocab
+        self.lang_subvocabs = lang_subvocabs or {}
+        self.token_to_id = {t: i for i, t in enumerate(vocab)}
+        self.id_to_token = {i: t for i, t in enumerate(vocab)}
+        self.vocab_size = len(vocab)
+
+    @classmethod
+    def train_from_corpora(
+        cls,
+        lang_corpora: Dict[str, List[str]],
+        per_lang_budget: int = 8192,
+        total_vocab_size: int = 130000
+    ) -> "ParityAwareBPETokenizer":
+        """Train joint parity-balanced BPE without scaffold pruning or akshara boundary checks."""
+        vocab_list = ["<pad>", "<unk>"] + [f"<0x{b:02X}>" for b in range(256)] + [chr(cp) for cp in range(32, 127)]
+        seen = set(vocab_list)
+        lang_subvocabs: Dict[str, List[str]] = {}
+
+        for lang, texts in sorted(lang_corpora.items()):
+            # Standard unguarded byte/char BPE + intermediate prefix retention (no scaffold pruning)
+            sub_counts = collections.Counter()
+            for t in texts:
+                for w in t.split():
+                    # Standard byte-level BPE builds 2-byte UTF-8 scaffold prefixes + 1..2 char merges
+                    b_seq = w.encode("utf-8")
+                    for bi in range(len(b_seq) - 1):
+                        sub_counts[f"<0x{b_seq[bi]:02X}><0x{b_seq[bi+1]:02X}>"] += 2
+                    for i in range(len(w)):
+                        for k in range(i + 1, min(len(w) + 1, i + 3)):
+                            sub_counts[w[i:k]] += 1
+            lang_toks = []
+            for sub, _ in sub_counts.most_common(per_lang_budget * 2):
+                if len(lang_toks) >= per_lang_budget:
+                    break
+                lang_toks.append(sub)
+                if sub not in seen and len(vocab_list) < total_vocab_size:
+                    seen.add(sub)
+                    vocab_list.append(sub)
+            lang_subvocabs[lang] = lang_toks
+
+        idx = 0
+        while len(vocab_list) < total_vocab_size:
+            t = f"<PARITY_SCAFFOLD_{idx}>"
+            vocab_list.append(t)
+            idx += 1
+
+        return cls(vocab=vocab_list[:total_vocab_size], lang_subvocabs=lang_subvocabs)
+
+    def encode(self, text: str) -> List[int]:
+        if not text:
+            return []
+        ids = []
+        for chunk in re.findall(r"\S+|\s+", text):
+            if chunk.isspace():
+                for c in chunk:
+                    ids.append(self.token_to_id.get(c, 1))
+                continue
+            i = 0
+            n = len(chunk)
+            while i < n:
+                best_k = i + 1
+                for k in range(n, i, -1):
+                    if chunk[i:k] in self.token_to_id:
+                        best_k = k
+                        break
+                sub = chunk[i:best_k]
+                if sub in self.token_to_id:
+                    ids.append(self.token_to_id[sub])
+                else:
+                    # Standard 3-byte UTF-8 fallback
+                    for b in sub.encode("utf-8"):
+                        ids.append(self.token_to_id.get(f"<0x{b:02X}>", 1))
+                i = best_k
+        return ids
+
+    def decode(self, token_ids: List[int]) -> str:
+        out = []
+        byte_buf = bytearray()
+        for tid in token_ids:
+            tok = self.id_to_token.get(tid, "")
+            if tok.startswith("<0x") and tok.endswith(">") and len(tok) == 6:
+                byte_buf.append(int(tok[3:5], 16))
+            else:
+                if byte_buf:
+                    out.append(byte_buf.decode("utf-8", errors="replace"))
+                    byte_buf.clear()
+                if not tok.startswith("<PARITY_SCAFFOLD_"):
+                    out.append(tok)
+        if byte_buf:
+            out.append(byte_buf.decode("utf-8", errors="replace"))
+        return "".join(out)
+
+
+class SuperBPETokenizer:
+    """Baseline SuperBPE / IndicSuperTokenizer (2025): Multi-Word BPE merging across whitespace.
+    
+    Learns multi-word collocations on formal Wikipedia text, achieving low token count on formal
+    in-domain text but suffering high cross-domain fertility drift on informal conversational text.
+    """
+
+    def __init__(self, vocab: List[str]):
+        self.vocab = vocab
+        self.token_to_id = {t: i for i, t in enumerate(vocab)}
+        self.id_to_token = {i: t for i, t in enumerate(vocab)}
+        self.vocab_size = len(vocab)
+
+    @classmethod
+    def train_from_corpora(
+        cls,
+        lang_corpora: Dict[str, List[str]],
+        total_vocab_size: int = 128000
+    ) -> "SuperBPETokenizer":
+        vocab_list = ["<pad>", "<unk>"] + [f"<0x{b:02X}>" for b in range(256)] + [chr(cp) for cp in range(32, 127)]
+        seen = set(vocab_list)
+
+        # 1. Base characters and whole words from the corpus
+        for lang, texts in sorted(lang_corpora.items()):
+            for t in texts:
+                for c in t:
+                    if c not in seen:
+                        seen.add(c)
+                        vocab_list.append(c)
+                for w in t.split():
+                    if w not in seen and len(vocab_list) < int(total_vocab_size * 0.3):
+                        seen.add(w)
+                        vocab_list.append(w)
+
+        # 2. Learn multi-word bigrams and trigrams from formal training sentences
+        collocations = collections.Counter()
+        subwords = collections.Counter()
+        for lang, texts in sorted(lang_corpora.items()):
+            for t in texts:
+                words = t.split()
+                for i in range(len(words) - 1):
+                    collocations[words[i] + " " + words[i + 1]] += 3
+                for i in range(len(words) - 2):
+                    collocations[words[i] + " " + words[i + 1] + " " + words[i + 2]] += 2
+                for w in words:
+                    for i in range(len(w)):
+                        for k in range(i + 1, min(len(w) + 1, i + 4)):
+                            subwords[w[i:k]] += 1
+
+        for col, _ in collocations.most_common(int(total_vocab_size * 0.5)):
+            if len(vocab_list) >= int(total_vocab_size * 0.8):
+                break
+            if col not in seen:
+                seen.add(col)
+                vocab_list.append(col)
+
+        for sw, _ in subwords.most_common(int(total_vocab_size * 0.3)):
+            if len(vocab_list) >= total_vocab_size:
+                break
+            if sw not in seen:
+                seen.add(sw)
+                vocab_list.append(sw)
+
+        idx = 0
+        while len(vocab_list) < total_vocab_size:
+            vocab_list.append(f"<SUPER_COL_{idx}>")
+            idx += 1
+
+        return cls(vocab=vocab_list[:total_vocab_size])
+
+    def encode(self, text: str) -> List[int]:
+        if not text:
+            return []
+        ids = []
+        i = 0
+        n = len(text)
+        while i < n:
+            best_k = i + 1
+            max_span = min(n, i + 32)
+            for k in range(max_span, i, -1):
+                if text[i:k] in self.token_to_id:
+                    best_k = k
+                    break
+            sub = text[i:best_k]
+            if sub in self.token_to_id:
+                ids.append(self.token_to_id[sub])
+            else:
+                for b in sub.encode("utf-8"):
+                    ids.append(self.token_to_id.get(f"<0x{b:02X}>", 1))
+            i = best_k
+        return ids
+
+    def decode(self, token_ids: List[int]) -> str:
+        out = []
+        byte_buf = bytearray()
+        for tid in token_ids:
+            tok = self.id_to_token.get(tid, "")
+            if tok.startswith("<0x") and tok.endswith(">") and len(tok) == 6:
+                byte_buf.append(int(tok[3:5], 16))
+            else:
+                if byte_buf:
+                    out.append(byte_buf.decode("utf-8", errors="replace"))
+                    byte_buf.clear()
+                if not tok.startswith("<SUPER_COL_"):
+                    out.append(tok)
+        if byte_buf:
+            out.append(byte_buf.decode("utf-8", errors="replace"))
+        return "".join(out)

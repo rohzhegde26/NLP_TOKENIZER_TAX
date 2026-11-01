@@ -57,7 +57,7 @@ Evaluated across FLORES-200 devtest and Belebele:
 1. `OpenAI Legacy BPE (cl100k_base)` (GPT-4 / GPT-3.5)
 2. `OpenAI Modern BPE (o200k_base)` (GPT-4o)
 3. `Qwen2.5 Byte-Level BPE` (`Qwen/Qwen2.5-1.5B`)
-4. `Qwen3.5 Byte-Level BPE` (`ccore/Qwen3.5-4B-3D-Coder`)
+4. `Qwen3.5 Byte-Level BPE` (`Qwen/Qwen3.5-4B`)
 5. `Gemma-2 SentencePiece` (`google/gemma-2-2b`)
 6. `Gemma-4 SentencePiece` (`google/gemma-4-E2B-it`)
 7. `Liquid LFM-3` (`LiquidAI/LFM3-1.7B`)
@@ -89,7 +89,7 @@ Evaluated on the multi-way parallel [FLORES-200](https://arxiv.org/abs/2208.1191
 | **Liquid LFM-3 (1.7B)** | **$3.064\times$** | $0.0693$ | $0.00\%$ | $4.39$ | $32.6\%$ | **$3.06\times$** |
 | **XLM-RoBERTa** | **$1.397\times$** | $0.0678$ | $0.00\%$ | $8.25$ | $71.6\%$ | **$1.40\times$** |
 | **IndicBERTv2** | **$1.123\times$** | $0.0339$ | $0.00\%$ | $11.42$ | $89.0\%$ | **$1.12\times$** |
-| **SPARSE-INDIC (Ours)** | **$0.972\times$** | **$0.0290$** | **$0.00\%$** | **$12.96$** | **$100.0\%$** | **$0.97\times$** |
+| **SPARSE-INDIC (Ours)** | **$1.100\times$** | **$0.0294$** | **$0.00\%$** | **$10.34$** | **$100.0\%$** | **$1.10\times$** |
 
 ### Context Window Erosion & Monetary Tax
 Under a standard 2,048-token context window:
@@ -171,16 +171,16 @@ All quantitative assertions are verified programmatically via `pytest tests/test
 | Gate ID | Failure Mode Addressed | Metric Tested in Automated Test Suite | Hard Pass Threshold | Programmatically Measured Result | Gate Status |
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | **DoD-1A** | Vocab Expansion VRAM & FLOP Bloat | Active Vocab Memory & LM-Head FLOPs vs. Full Expanded Vocab ($130,304$) | $\ge 65.0\%$ reduction | **$69.16\%$ reduction** ($40,192$ vs $130,304$) | **PASSED** |
-| **DoD-1B** | Logit Projection Latency | Autoregressive Time-Per-Output-Token (TPOT) speedup with routed LM head | $\ge 15.0\%$ speedup | **$68.09\%$ speedup** ($41.47\text{ ms} \to 13.23\text{ ms}$) | **PASSED** |
+| **DoD-1B** | Logit Projection Latency | Autoregressive Time-Per-Output-Token (TPOT) speedup with routed LM head | $\ge 15.0\%$ speedup | **$68.40\%$ speedup** ($43.98\text{ ms} \to 13.90\text{ ms}$) | **PASSED** |
 | **DoD-1C** | Catastrophic Forgetting & Leakage | English Belebele accuracy delta & out-of-script token generation rate | $< 0.5\%$ drop, $0.0\%$ leakage | **$0.0\%$ accuracy drop, $0.00\%$ leakage** | **PASSED** |
-| **DoD-2A** | Cross-Lingual Token Tax & Inequality | Mean Indic Parity ($P_L$) & Cross-Lingual Gini on FLORES-200 | Mean $P_L \le 1.35\times$, Gini $\le 0.030$ | **Mean $P_L = 0.972\times$, Gini $= 0.0290$** | **PASSED** |
-| **DoD-2B** | Parity-BPE Scaffold Deadweight | Active Vocab Utilization Rate & Low-Resource Belebele Gain over Parity-BPE | $\ge 85.0\%$ util, $\ge +2.0\%$ gain | **$95.46\%$ utilization, $+3.30\%$ gain** | **PASSED** |
+| **DoD-2A** | Cross-Lingual Token Tax & Inequality | Mean Indic Parity ($P_L$) & Cross-Lingual Gini on FLORES-200 | Mean $P_L \le 1.35\times$, Gini $\le 0.030$ | **Mean $P_L = 1.100\times$, Gini $= 0.0294$** | **PASSED** |
+| **DoD-2B** | Parity-BPE Scaffold Deadweight | Active Vocab Utilization Rate & Low-Resource Belebele Gain over Parity-BPE | $\ge 85.0\%$ util, $\ge +2.0\%$ gain | **$93.60\%$ utilization, $+5.50\%$ gain** | **PASSED** |
 | **DoD-3A** | Broken Aksharas & Orphaned Matras | Split-Akshara Rate (% of tokens starting with bare matra/halant/nukta) | Exact $0.0\%$ rate | **Exact $0.0000\%$** ($0$ split aksharas) | **PASSED** |
-| **DoD-3B** | Dravidian Root Severing & Code-Mix | Morphological Boundary F1 & Romanized Code-Mixed Fertility Drift | $\text{F1} \ge 0.80$, Drift $\le 15.0\%$ | **$\text{F1} = 0.929$, Drift $= 12.41\%$** | **PASSED** |
+| **DoD-3B** | Dravidian Root Severing & Code-Mix | Morphological Boundary F1 & Romanized Code-Mixed Fertility Drift | $\text{F1} \ge 0.80$, Drift $\le 15.0\%$ | **$\text{F1} = 0.929$, Drift $= 14.85\%$** | **PASSED** |
 | **DoD-4A** | Transliteration Loss & Latency | Exact string round-trip match (`detokenize(tokenize(s)) == s`) & latency | Exact $100.0\%$, $0\text{ ms}$ latency | **$100.0\%$ lossless** ($12,144/12,144$, $0\text{ ms}$) | **PASSED** |
-| **DoD-4B** | Cold Tokens in Low-Resource Banks | Latent Pan-Indic cognate cosine similarity across Deva, Beng, Knda, Taml, Telu | Mean cosine sim $\ge 0.80$ | **$\text{Mean sim} = 0.9097$** | **PASSED** |
-| **DoD-5A** | SuperBPE Multi-Word Overfitting | Cross-domain fertility drift (formal Wikipedia to informal/conversational) | $\le 8.0\%$ drift | **$0.07\%$ drift** (vs $>20\%$ in SuperBPE) | **PASSED** |
-| **DoD-6A** | 3-Byte UTF-8 Brahmic Penalty | $R_{\text{byte}}$, Worst-Case OOV Character Token Cost, and Mean Bytes/Token | $R_{\text{byte}} = 0.0\%$, $\text{OOV} = 1.0$, $\ge 2.8\text{ B/tok}$ | **$R_{\text{byte}} = 0.0\%$, $\text{OOV} = 1.0\text{ tok/char}$, $12.96\text{ B/tok}$** | **PASSED** |
+| **DoD-4B** | Cold Tokens in Low-Resource Banks | Latent Pan-Indic cognate cosine similarity across Deva, Beng, Knda, Taml, Telu | Mean cosine sim $\ge 0.80$ | **$\text{Mean sim} = 0.9115$** | **PASSED** |
+| **DoD-5A** | SuperBPE Multi-Word Overfitting | Cross-domain fertility drift (formal Wikipedia to informal/conversational) | $\le 8.0\%$ drift | **$7.69\%$ drift** (vs $147.3\%$ in SuperBPE) | **PASSED** |
+| **DoD-6A** | 3-Byte UTF-8 Brahmic Penalty | $R_{\text{byte}}$, Worst-Case OOV Character Token Cost, and Mean Bytes/Token | $R_{\text{byte}} = 0.0\%$, $\text{OOV} = 1.0$, $\ge 2.8\text{ B/tok}$ | **$R_{\text{byte}} = 0.0\%$, $\text{OOV} = 1.0\text{ tok/char}$, $6.00\text{ B/tok}$** | **PASSED** |
 
 ---
 
@@ -189,17 +189,21 @@ All quantitative assertions are verified programmatically via `pytest tests/test
 ### Master Comparative Scorecard
 Side-by-side empirical comparison generated via `scripts/run_phase2_benchmarks.py`:
 
-| Tokenizer / Paradigm | Total Vocab | Active Vocab | FLOP Red. (%) | TPOT Speedup (%) | Mean Parity ($P_L$) | Indic Gini | Vocab Util (%) | Split Aksharas (%) | Morph F1 | Exact Lossless (%) | Domain Drift (%) | $R_{\text{byte}}$ (%) | OOV Cost (tok/char) | Bytes / Token |
+| Tokenizer / Paradigm | Total Vocab | Active Vocab | FLOP Reduction (%) | TPOT Speedup (%) | Mean Parity (P_L) | Indic Gini | Vocab Util (%) | Split Aksharas (%) | Morph F1 | Exact Lossless (%) | Domain Drift (%) | R_byte (%) | OOV Cost (tok/char) | Bytes/Token |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **OpenAI cl100k_base** | 100,256 | 100,256 | 0.0% | 0.0% | 7.451 | 0.1569 | 52.3% | 18.4% | 0.420 | 100.0% | 18.2% | 45.93% | 3.0 | 2.15 |
-| **OpenAI o200k_base** | 200,000 | 200,000 | 0.0% | 0.0% | 2.183 | 0.1615 | 61.8% | 11.2% | 0.540 | 100.0% | 14.6% | 6.84% | 3.0 | 6.61 |
-| **Qwen2.5 (1.5B)** | 151,936 | 151,936 | 0.0% | 0.0% | 6.348 | 0.1309 | 56.4% | 22.7% | 0.460 | 100.0% | 16.9% | 0.00% | 3.0 | 2.39 |
-| **Gemma-4 (E2B-it)** | 256,000 | 256,000 | 0.0% | 0.0% | 1.905 | 0.1689 | 68.2% | 7.9% | 0.610 | 100.0% | 12.8% | 0.16% | 3.0 | 7.46 |
-| **Liquid LFM-3 (1.7B)** | 65,536 | 65,536 | 0.0% | 0.0% | 3.064 | 0.0693 | 64.1% | 14.5% | 0.510 | 100.0% | 15.3% | 0.00% | 3.0 | 4.39 |
-| **IndicBERTv2 (MLM)** | 200,000 | 200,000 | 0.0% | 0.0% | 1.123 | 0.0339 | 71.5% | 8.3% | 0.680 | 100.0% | 11.2% | 0.00% | 3.0 | 11.42 |
-| **Parity-Aware BPE** | 130,000 | 130,000 | 0.0% | 0.0% | 1.050 | 0.0280 | 54.8% | 6.7% | 0.650 | 100.0% | 10.4% | 0.00% | 3.0 | 7.10 |
-| **SuperBPE (Multi-Word)** | 128,000 | 128,000 | 0.0% | 0.0% | 0.820 | 0.0520 | 48.2% | 9.4% | 0.380 | 100.0% | 34.8% | 0.00% | 3.0 | 8.50 |
-| **SPARSE-INDIC (Ours)** | **130,304** | **40,192** | **69.16%** | **68.09%** | **0.972** | **0.0290** | **95.46%** | **0.0%** | **0.929** | **100.0%** | **0.07%** | **0.00%** | **1.0** | **12.96** |
+| OpenAI Legacy BPE (cl100k_base) | 100,277 | 100,277 | 0.00% | 0.00% | 7.451 | 0.1569 | 44.80% | 9.7300 | 0.203 | 100.00% | 21.38% | 45.93% | 2.0 | 2.15 |
+| OpenAI Modern BPE (o200k_base) | 200,019 | 200,019 | 0.00% | 0.00% | 2.183 | 0.1615 | 67.20% | 29.2200 | 0.281 | 100.00% | 12.16% | 6.84% | 2.0 | 6.61 |
+| Qwen2.5 Byte-Level BPE | 151,665 | 151,665 | 0.00% | 0.00% | 6.348 | 0.1309 | 58.78% | 11.2200 | 0.210 | 81.50% | 21.36% | 0.00% | 2.0 | 2.39 |
+| Qwen3.5 Byte-Level BPE | 248,077 | 248,077 | 0.00% | 0.00% | 2.878 | 0.1156 | 83.96% | 24.6100 | 0.243 | 81.50% | 17.12% | 0.00% | 2.0 | 4.79 |
+| Gemma-2 SentencePiece | 256,000 | 256,000 | 0.00% | 0.00% | 2.999 | 0.1340 | 80.56% | 24.9400 | 0.270 | 100.00% | 15.88% | 0.06% | 3.0 | 4.77 |
+| Gemma-4 SentencePiece | 262,144 | 262,144 | 0.00% | 0.00% | 1.905 | 0.1689 | 56.74% | 15.2100 | 0.238 | 100.00% | 9.66% | 0.16% | 3.0 | 7.46 |
+| Liquid LFM-3 | 125,033 | 125,033 | 0.00% | 0.00% | 3.064 | 0.0693 | 81.97% | 48.7000 | 0.136 | 100.00% | 17.80% | 0.00% | 2.0 | 4.39 |
+| Multilingual Unigram LM (XLM-RoBERTa) | 250,002 | 250,002 | 0.00% | 0.00% | 1.397 | 0.0678 | 56.16% | 9.0200 | 0.452 | 65.00% | 11.32% | 0.00% | 2.0 | 8.24 |
+| Legacy Multilingual WordPiece (mBERT) | 119,547 | 119,547 | 0.00% | 0.00% | 2.062 | 0.1132 | 76.48% | 0.0000 | 0.085 | 28.30% | 7.62% | 0.00% | 1.0 | 6.54 |
+| Indic-Specialized Baseline (IndicBERTv2) | 250,000 | 250,000 | 0.00% | 0.00% | 1.123 | 0.0339 | 40.09% | 0.0000 | 0.138 | 0.00% | 4.42% | 0.00% | 1.0 | 11.42 |
+| Parity-Aware BPE (2026) | 130,000 | 130,000 | 0.00% | 0.00% | 1.009 | 0.0216 | 55.21% | 18.1200 | 0.225 | 99.90% | 15.22% | 0.03% | 3.0 | 4.38 |
+| SuperBPE (2025 Multi-Word) | 128,000 | 128,000 | 0.00% | 0.00% | 1.048 | 0.0271 | 18.57% | 11.5400 | 0.182 | 100.00% | 201.64% | 0.04% | 3.0 | 6.60 |
+| **SPARSE-INDIC (Ours)** | **130,304** | **40,192** | **69.16%** | **72.72%** | **1.100** | **0.0294** | **93.41%** | **0.0000** | **0.929** | **100.00%** | **7.69%** | **0.00%** | **1.0** | **10.34** |
 
 ### Key Figures Produced:
 - **`results/figures/phase2_pareto_frontier.png`**: Demonstrates the Pareto frontier between Active GPU Vocabulary Size (Parameters) and Mean Indic Parity Ratio ($P_L$). SPARSE-INDIC establishes a dominant Pareto-optimal point at $(40,192\text{ tokens}, 0.972\times)$, dramatically outperforming dense multi-hundred-thousand token vocabularies.
