@@ -26,8 +26,9 @@ This repository implements the complete end-to-end research methodology and code
    - [Module 6: Script-Relative 1-Byte Offset Fallback](#module-6-script-relative-1-byte-offset-fallback)
 5. [Definition of Done (DoD) Quantitative Verification Gate](#5-definition-of-done-dod-quantitative-verification-gate)
 6. [Comparative Scorecard & Empirical Benchmarks](#6-comparative-scorecard--empirical-benchmarks)
-7. [Repository Structure](#7-repository-structure)
-8. [Reproducibility & Execution Protocol](#8-reproducibility--execution-protocol)
+7. [Interactive Comparative Demo](#7-interactive-comparative-demo--visualizer-playground)
+8. [Repository Structure](#8-repository-structure)
+9. [Reproducibility & Execution Protocol](#9-reproducibility--execution-protocol)
 
 ---
 
@@ -213,7 +214,45 @@ Side-by-side empirical comparison generated via `scripts/run_phase2_benchmarks.p
 
 ---
 
-## 7. Repository Structure
+## 7. Interactive Comparative Demo & Visualizer Playground
+
+An interactive web application inspired by the gpt-tokenizer.dev playground is available in the [demo/](demo/index.html) directory. It enables side-by-side comparative inspection between **SPARSE-INDIC** and all 12 competitor tokenizers across 16 curated Indic probe scenarios.
+
+`ash
+# Launch interactive local server and open in browser:
+python scripts/launch_demo.py
+`
+*(Alternatively, simply double-click demo/index.html to run offline without a local server.)*
+
+### Key Features of the Interactive Studio:
+1. **Side-by-Side Visual Tokenizer Stream:**
+   - Visualizes token pieces with alternating color badges and space delimiters.
+   - **Pathology Detector:** Automatically highlights **broken aksharas** (orphaned matras/viramas in red) and **3-byte fallback explosions** (orange).
+   - Real-time token inspector displaying exact token IDs, UTF-8 hex representations, and vocabulary bank provenance ([Always-On Core: 32k], [On-Demand Bank: 8.2k], [Script-Relative Fallback]).
+2. **16 Curated Multi-Lingual Linguistic Probes:**
+   - **Orthographic Syllables & Broken Aksharas:** Hindi (hin_Deva), Bengali (en_Beng), Gujarati (guj_Gujr), Marathi (mar_Deva), Punjabi (pan_Guru), Odia (ory_Orya), Assamese (sm_Beng), Nepali (
+pi_Deva).
+   - **Agglutinative Morphology & Suffix Fragmentation:** Tamil (	am_Taml), Telugu (	el_Telu), Kannada (kan_Knda), Malayalam (mal_Mlym).
+   - **Conversational Code-Mixing:** Hinglish (eng_Latn / Latin) and Tanglish (	am_Taml / Latin).
+   - **OOV & Rare Fallback:** Vedic and rare Brahmic characters testing single-token <BRAHMIC_0x..> fallback vs. 3-byte <0x..> explosion.
+   - **Domain Shift Stability:** Formal collocations vs. conversational speech probe demonstrating SuperBPE's domain collapse.
+3. **Research Paper Evidence & Figures Gallery:**
+   - Dedicated high-resolution interactive viewer for all figures and tables from 
+lp_paper-2.pdf:
+     - **Fig. 1: SPARSE-INDIC Modular Architecture Workflow** (extracted from Page 4)
+     - **Pareto Frontier:** Active GPU Vocab vs. Mean Parity $
+     - **Lorenz Curves & Gini Inequality Curves**
+     - **Multi-Tokenizer Parity Heatmap (10 Models × 13 Languages)**
+     - **Causal Truncation Attribution (Belebele Equal-Token vs. Equal-Content)**
+     - **Published Paper Tables I, II, & III**
+4. **Phase 2 Master Scorecard Interactive Table:**
+   - Live filterable table of all 13 tokenizers and all 14 quantitative metrics.
+5. **Freeform User Input Sandbox:**
+   - Users can type or paste any arbitrary Indic, English, or multilingual text to receive live dynamic tokenization and comparative metrics.
+
+---
+
+## 8. Repository Structure
 
 ```text
 tokenizer-tax-sparse-indic/
@@ -257,7 +296,7 @@ tokenizer-tax-sparse-indic/
 
 ---
 
-## 8. Reproducibility & Execution Protocol
+## 9. Reproducibility & Execution Protocol
 
 ### Step 1: Environment Setup
 ```bash
