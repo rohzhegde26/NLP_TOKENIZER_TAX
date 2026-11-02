@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPARSE-INDIC: Editorial Academic Tokenizer Studio | Research Evaluation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/gpt-tokenizer.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #ffffff;
+      --bg-subtle: #f8fafc;
+      --bg-card: #ffffff;
+      --border-light: #e2e8f0;
+      --border-dark: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --academic-blue: #1e3a8a;
+      --academic-blue-light: #eff6ff;
+      --sage-green: #065f46;
+      --sage-bg: #ecfdf5;
+      --sage-border: #a7f3d0;
+      --sage-chip: #d1fae5;
+      --coral-red: #9f1239;
+      --coral-bg: #fff1f2;
+      --coral-border: #fecdd3;
+      --coral-chip: #ffe4e6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* Style Switcher Ribbon */
+    .style-switcher-bar {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 0.45rem 1.5rem;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+    }
+    .style-switcher-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .style-btn {
+      color: #cbd5e1;
+      text-decoration: none;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+      font-weight: 500;
+    }
+    .style-btn:hover {
+      background: #1e293b;
+      color: white;
+    }
+    .style-btn.active {
+      background: #3b82f6;
+      color: white;
+      font-weight: 600;
+    }
+
+    /* Scholarly Header */
+    header {
+      border-bottom: 1px solid var(--border-light);
+      background: #ffffff;
+      padding: 1.5rem 0 1rem 0;
+    }
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    .academic-meta {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--academic-blue);
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .academic-title {
+      font-family: 'Newsreader', serif;
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: #0f172a;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+    .academic-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      max-width: 1000px;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+    .authors-line {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    /* Academic Nav Tabs */
+    .academic-nav {
+      display: flex;
+      gap: 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+      margin-top: 0.75rem;
+    }
+    .academic-nav-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 0.65rem 0.2rem;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .academic-nav-btn:hover {
+      color: var(--text-main);
+    }
+    .academic-nav-btn.active {
+      color: var(--academic-blue);
+      border-bottom-color: var(--academic-blue);
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Metric Summary Strip (Academic Cards) */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 1024px) {
+      .summary-strip {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .summary-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .summary-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1rem 1.15rem;
+    }
+    .summary-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.35rem;
+    }
+    .summary-value {
+      font-family: 'Newsreader', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.1;
+    }
+    .summary-value.highlight {
+      color: var(--sage-green);
+    }
+    .summary-desc {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    /* Section Tabs */
+    .section-tab {
+      display: none;
+    }
+    .section-tab.active {
+      display: block;
+    }
+
+    /* Scenario Carousel Strip */
+    .scenario-strip-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .scenario-title {
+      font-family: 'Newsreader', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .scenario-pills-wrap {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.65rem;
+      margin-bottom: 1.5rem;
+      scrollbar-width: thin;
+    }
+    .scenario-pill {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .scenario-pill:hover {
+      border-color: var(--border-dark);
+      color: var(--text-main);
+      background: var(--bg-subtle);
+    }
+    .scenario-pill.active {
+      background: var(--academic-blue-light);
+      border-color: #93c5fd;
+      color: var(--academic-blue);
+      font-weight: 600;
+    }
+
+    /* Input & Objective Layout */
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 960px) {
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .academic-card {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1.35rem;
+    }
+    .card-heading {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .text-input-field {
+      width: 100%;
+      min-height: 90px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #0f172a;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .text-input-field:focus {
+      outline: none;
+      border-color: var(--academic-blue);
+      background: #ffffff;
+    }
+    .translation-callout {
+      margin-top: 0.85rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-subtle);
+      border-left: 3px solid var(--academic-blue);
+      border-radius: 0 4px 4px 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .translation-callout strong {
+      color: var(--academic-blue);
+      font-family: 'Newsreader', serif;
+      font-size: 0.95rem;
+      margin-right: 0.35rem;
+    }
+
+    .hypothesis-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hypothesis-text {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .target-callout {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.8rem;
+      color: #881337;
+    }
+    .target-callout strong {
+      display: block;
+      color: var(--coral-red);
+      margin-bottom: 0.2rem;
+    }
+
+    /* Dual-Panel Token Breakdown */
+    .dual-pane-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 900px) {
+      .dual-pane-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .pane-card {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .pane-card.sparse-pane {
+      border-color: #a7f3d0;
+    }
+    .pane-card.baseline-pane {
+      border-color: #fecdd3;
+    }
+
+    .pane-header {
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid;
+    }
+    .pane-header.sparse-header {
+      background: var(--sage-bg);
+      border-bottom-color: var(--sage-border);
+      color: var(--sage-green);
+    }
+    .pane-header.baseline-header {
+      background: var(--coral-bg);
+      border-bottom-color: var(--coral-border);
+      color: var(--coral-red);
+    }
+    .pane-title {
+      font-family: 'Newsreader', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .select-academic {
+      background: #ffffff;
+      border: 1px solid var(--border-dark);
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #0f172a;
+      outline: none;
+    }
+
+    /* Metrics Strip in Pane */
+    .pane-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-subtle);
+    }
+    .pane-metric-cell {
+      padding: 0.65rem 0.85rem;
+      text-align: center;
+      border-right: 1px solid var(--border-light);
+    }
+    .pane-metric-cell:last-child {
+      border-right: none;
+    }
+    .pane-metric-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+    .pane-metric-val {
+      font-family: 'Newsreader', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Token Visualizer Stream */
+    .stream-container {
+      padding: 1.25rem;
+      min-height: 220px;
+      max-height: 360px;
+      overflow-y: auto;
+      line-height: 2.2;
+      background: #ffffff;
+    }
+    .academic-token {
+      display: inline-block;
+      margin: 2px 3px;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      border: 1px solid;
+    }
+    .academic-token:hover {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+
+    /* Token Colors (Editorial Palette) */
+    .tok-sparse-safe {
+      background: var(--sage-chip);
+      color: var(--sage-green);
+      border-color: #a7f3d0;
+    }
+    .tok-sparse-core {
+      background: #f1f5f9;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+    .tok-sparse-fallback {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+    .tok-base-regular {
+      background: #f8fafc;
+      color: #334155;
+      border-color: #e2e8f0;
+    }
+    .tok-base-broken {
+      background: #fee2e2 !important;
+      color: #9f1239 !important;
+      border: 1.5px dashed #e11d48 !important;
+    }
+    .tok-base-byte {
+      background: #ffedd5 !important;
+      color: #9a3412 !important;
+      border: 1px solid #fdba74 !important;
+    }
+
+    .stream-footer {
+      padding: 0.65rem 1.25rem;
+      background: var(--bg-subtle);
+      border-top: 1px solid var(--border-light);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stream-footer-info {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      color: #0f172a;
+    }
+
+    /* Scientific Diagnostics Box */
+    .academic-diagnostic {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .diagnostic-heading {
+      font-family: 'Newsreader', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .diag-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .diag-cols {
+        grid-template-columns: 1fr;
+      }
+    }
+    .diag-col-box {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+    }
+    .diag-subheading {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.4rem;
+    }
+
+    /* Scorecard Table */
+    .table-card {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow-x: auto;
+      background: #ffffff;
+      margin-bottom: 2.5rem;
+    }
+    .academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: right;
+    }
+    .academic-table th, .academic-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      white-space: nowrap;
+    }
+    .academic-table th {
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .academic-table th:first-child, .academic-table td:first-child {
+      text-align: left;
+    }
+    .academic-table tr:hover td {
+      background: #f8fafc;
+    }
+    .row-highlight-ours {
+      background: #f0fdf4 !important;
+      font-weight: 600;
+    }
+    .row-highlight-ours td {
+      color: #166534;
+      border-bottom-color: #bbf7d0;
+    }
+
+    /* Figures Gallery */
+    .figures-grid-academic {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 1024px) {
+      .figures-grid-academic {
+        grid-template-columns: 1fr;
+      }
+    }
+    .fig-img-frame {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1rem;
+      background: #ffffff;
+      text-align: center;
+    }
+    .fig-img-frame img {
+      max-width: 100%;
+      max-height: 520px;
+      object-fit: contain;
+      cursor: zoom-in;
+    }
+    .fig-caption-wrap {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    .fig-caption-title {
+      font-family: 'Newsreader', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Zoom Modal */
+    .zoom-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .zoom-modal.active { display: flex; }
+    .zoom-modal img {
+      max-width: 95%; max-height: 90vh;
+      border-radius: 6px;
+      background: #ffffff;
+      padding: 0.5rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-light);
+      background: var(--bg-subtle);
+      padding: 2.5rem 0;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Style Switcher Banner -->
+  <div class="style-switcher-bar">
+    <div class="style-switcher-group">
+      <span>Layout Style:</span>
+      <a href="index.html" class="style-btn">Dark Glassmorphism (Style 1)</a>
+      <a href="academic.html" class="style-btn active">Editorial Academic (Style 2)</a>
+      <a href="bento.html" class="style-btn">Bento-Grid Dashboard (Style 4)</a>
+    </div>
+    <div>
+      <span>Branch: <code>idea-2</code> (RV University, Bengaluru)</span>
+    </div>
+  </div>
+
+  <!-- Scholarly Header -->
+  <header>
+    <div class="header-inner">
+      <div class="academic-meta">
+        <span>Research Paper Artifact</span>
+        <span>•</span>
+        <span>Empirical Evaluation Suite</span>
+        <span>•</span>
+        <span>FLORES-200 & Belebele</span>
+      </div>
+      <h1 class="academic-title">The Tokenizer Tax & SPARSE-INDIC: Quantifying Downstream Costs for Indian Languages</h1>
+      <p class="academic-subtitle">
+        An interactive empirical audit of cross-lingual fertility, akshara boundary preservation, and active-routed vocabulary sparsity across 12 Indic languages and 13 modern tokenization paradigms.
+      </p>
+      <div class="authors-line">
+        Rohit Ajit Bharadwaj, Rohith P Hegde, S Sachithananthan, Saket M — School of Computer Science & Engineering, RV University, Bengaluru, India
+      </div>
+
+      <nav class="academic-nav">
+        <button class="academic-nav-btn active" onclick="switchAcademicTab('tab-breakdown', this)">Interactive Syllable Breakdown</button>
+        <button class="academic-nav-btn" onclick="switchAcademicTab('tab-scorecard-acad', this)">Master Scorecard Table</button>
+        <button class="academic-nav-btn" onclick="switchAcademicTab('tab-figures-acad', this)">Publication Exhibits (Paper Figures)</button>
+        <a href="https://github.com/rohzhegde26/NLP_TOKENIZER_TAX/tree/idea-2" target="_blank" style="margin-left: auto; text-decoration: none; color: var(--academic-blue); font-size: 0.85rem; font-weight: 600; padding: 0.65rem 0;">View GitHub Source ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Global Metric Strip -->
+    <div class="summary-strip">
+      <div class="summary-card">
+        <div class="summary-label">FLOP Reduction</div>
+        <div class="summary-value highlight">69.16%</div>
+        <div class="summary-desc">Active LM-Head projection saving</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Mean Indic Parity (P_L)</div>
+        <div class="summary-value highlight">1.100×</div>
+        <div class="summary-desc">vs 7.451× legacy BPE (cl100k)</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Split Akshara Rate</div>
+        <div class="summary-value highlight">0.0000%</div>
+        <div class="summary-desc">vs 48.70% (Liquid LFM-3)</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Active GPU Vocab</div>
+        <div class="summary-value">40,192</div>
+        <div class="summary-desc">vs 248,077 (Qwen 3.5)</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">TPOT Latency Speedup</div>
+        <div class="summary-value highlight">68.40%</div>
+        <div class="summary-desc">13.90 ms vs 43.98 ms dense</div>
+      </div>
+    </div>
+
+    <!-- TAB 1: BREAKDOWN -->
+    <div id="tab-breakdown" class="section-tab active">
+
+      <!-- Scenario Selector -->
+      <div class="scenario-strip-header">
+        <h2 class="scenario-title">Empirical Benchmark Probes (16 Multi-Lingual Scenarios)</h2>
+        <span id="acad-category-badge" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--academic-blue);">Orthographic Aksharas</span>
+      </div>
+
+      <div class="scenario-pills-wrap" id="acad-presets-container">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Input & Hypothesis Card -->
+      <div class="editor-layout">
+        <div class="academic-card">
+          <div class="card-heading">
+            <span>Input Indic Sentence</span>
+            <span id="acad-stats-counter" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">72 chars | 9 words | 196 bytes</span>
+          </div>
+          <textarea id="acad-input-text" class="text-input-field" spellcheck="false"></textarea>
+          <div class="translation-callout">
+            <strong>English Translation:</strong>
+            <span id="acad-english-ref">The Indian Institute of Technology located in Chennai is a premier university.</span>
+          </div>
+        </div>
+
+        <div class="hypothesis-card">
+          <div>
+            <div class="card-heading">
+              <span>Linguistic Hypothesis</span>
+              <span id="acad-lang-code" style="font-family: 'JetBrains Mono', monospace; color: var(--academic-blue);">hin_Deva</span>
+            </div>
+            <p id="acad-probe-desc" class="hypothesis-text">
+              Exposes broken akshara pathologies in conjuncts (प्रौद्योगिकी, संस्थान, विश्वविद्यालय). Standard BPE splits consonants from dependent matras, whereas SPARSE-INDIC keeps all akshara syllables intact.
+            </p>
+          </div>
+          <div class="target-callout">
+            <strong>Target Baseline Failure:</strong>
+            <span id="acad-target-failure">Liquid LFM-3 (48.7% split), OpenAI cl100k (32+ tokens for 4 words), and Qwen 2.5.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dual Pane Side-by-Side Comparison -->
+      <div class="dual-pane-grid">
+
+        <!-- SPARSE-INDIC (OURS) -->
+        <div class="pane-card sparse-pane">
+          <div class="pane-header sparse-header">
+            <div>
+              <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Proposed Architecture</span>
+              <h3 class="pane-title">SPARSE-INDIC (Ours)</h3>
+            </div>
+            <div>
+              <span style="font-size: 0.75rem; background: #ffffff; padding: 0.25rem 0.55rem; border-radius: 4px; border: 1px solid #a7f3d0; font-weight: 600;">Core: 32k | Bank: 8.2k</span>
+            </div>
+          </div>
+
+          <div class="pane-metrics">
+            <div class="pane-metric-cell">
+              <div class="pane-metric-label">Token Count</div>
+              <div id="acad-sparse-count" class="pane-metric-val" style="color: var(--sage-green);">28</div>
+            </div>
+            <div class="pane-metric-cell">
+              <div class="pane-metric-label">Parity (P_L)</div>
+              <div id="acad-sparse-parity" class="pane-metric-val">1.12×</div>
+            </div>
+            <div class="pane-metric-cell">
+              <div class="pane-metric-label">Active Vocab</div>
+              <div class="pane-metric-val" style="color: var(--sage-green);">40,192</div>
+            </div>
+            <div class="pane-metric-cell">
+              <div class="pane-metric-label">TPOT Latency</div>
+              <div class="pane-metric-val" style="color: var(--sage-green);">13.9 ms</div>
+            </div>
+          </div>
+
+          <div class="stream-container" id="acad-sparse-stream">
+            <!-- Tokens rendered via JS -->
+          </div>
+
+          <div class="stream-footer">
+            <span>Hover on token for metadata:</span>
+            <span id="acad-sparse-inspector" class="stream-footer-info">Hover token</span>
+          </div>
+        </div>
+
+        <!-- BASELINE MODEL -->
+        <div class="pane-card baseline-pane">
+          <div class="pane-header baseline-header">
+            <div>
+              <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Baseline Competitor</span>
+              <label for="acad-rival-select" style="display:none">Rival</label>
+              <select id="acad-rival-select" class="select-academic" onchange="onAcadRivalChange()">
+                <option value="cl100k_base" selected>OpenAI Legacy BPE (cl100k_base)</option>
+                <option value="o200k_base">OpenAI Modern BPE (o200k_base)</option>
+                <option value="qwen2_5">Qwen 2.5 Byte-Level BPE (1.5B)</option>
+                <option value="qwen3_5">Qwen 3.5 Byte-Level BPE (4B)</option>
+                <option value="gemma_2">Gemma-2 SentencePiece (2B)</option>
+                <option value="gemma_4">Gemma-4 SentencePiece (E2B-it)</option>
+                <option value="lfm_3">Liquid LFM-3 (1.7B)</option>
+                <option value="xlm_roberta">Multilingual Unigram LM (XLM-RoBERTa)</option>
+                <option value="mbert">Legacy WordPiece (mBERT)</option>
+                <option value="indicbert_v2">IndicBERTv2 (ai4bharat)</option>
+                <option value="parity_bpe">Parity-Aware BPE (2026)</option>
+                <option value="super_bpe">SuperBPE (2025 Multi-Word)</option>
+              </select>
+            </div>
+            <div id="acad-rival-vocab-badge" style="font-size: 0.75rem; background: #ffffff; padding: 0.25rem 0.55rem; border-radius: 4px; border: 1px solid #fecdd3; font-weight: 600;">Vocab: 100,277</div>
+          </div>
+
+          <div class="pane-metrics">
+            <div class="pane-metric-cell">
+              <div class="pane-metric-label">Token Count</div>
+              <div id="acad-rival-count" class="pane-metric-val" style="color: var(--coral-red);">75</div>
+            </div>
+            <div class="pane-metric-cell">
+              <div class="pane-metric-label">Parity (P_L)</div>
+              <div id="acad-rival-parity" class="pane-metric-val" style="color: var(--coral-red);">7.45×</div>
+            </div>
+            <div class="pane-metric-cell">
+              <div class="pane-metric-label">Active Vocab</div>
+              <div id="acad-rival-active-vocab" class="pane-metric-val">100,277</div>
+            </div>
+            <div class="pane-metric-cell">
+              <div class="pane-metric-label">TPOT Latency</div>
+              <div class="pane-metric-val">44.0 ms</div>
+            </div>
+          </div>
+
+          <div class="stream-container" id="acad-rival-stream">
+            <!-- Tokens rendered via JS -->
+          </div>
+
+          <div class="stream-footer">
+            <span id="acad-rival-alert-msg" style="color: var(--coral-red); font-weight: 600;">12 Broken Aksharas Detected</span>
+            <span id="acad-rival-inspector" class="stream-footer-info">Hover token</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Scientific Diagnostics -->
+      <div class="academic-diagnostic">
+        <h3 class="diagnostic-heading">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="acad-diag-title">Pathology Assessment: Akshara Syllable Severing</span>
+        </h3>
+        <div class="diag-cols">
+          <div class="diag-col-box">
+            <div class="diag-subheading">Mechanisms of Baseline Fragmentation</div>
+            <p id="acad-diag-explanation" style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+              The baseline tokenizer splits complex consonant conjuncts into disjoint single-byte fragments or orphaned matras. Because the language model's attention mechanism must link separated phonological units across multiple positions, semantic comprehension and downstream reasoning accuracy suffer.
+            </p>
+          </div>
+          <div class="diag-col-box">
+            <div class="diag-subheading">Mitigation via SPARSE-INDIC Architecture</div>
+            <p id="acad-diag-solution" style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+              SPARSE-INDIC implements an Akshara-Bounded Pretokenizer that checks Unicode Brahmic regex bounds prior to subword merges. It strictly forbids decomposing conjuncts and vowel signs, ensuring 0.0000% split syllables and enabling near-unity parity (1.10×).
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 2: SCORECARD -->
+    <div id="tab-scorecard-acad" class="section-tab">
+      <div class="scenario-strip-header">
+        <h2 class="scenario-title">Phase 2 Master Comparative Scorecard (12 Empirical Metrics)</h2>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">Evaluated on 12,144 FLORES-200 Devtest Sentences</span>
+      </div>
+
+      <div class="table-card">
+        <table class="academic-table" id="acad-scorecard-table">
+          <thead>
+            <tr>
+              <th>Tokenizer / Paradigm</th>
+              <th>Total Vocab</th>
+              <th>Active Vocab</th>
+              <th>FLOP Red. (%)</th>
+              <th>TPOT Speedup (%)</th>
+              <th>Mean Parity (P_L)</th>
+              <th>Indic Gini</th>
+              <th>Vocab Util (%)</th>
+              <th>Split Aksharas (%)</th>
+              <th>Morph F1</th>
+              <th>Exact Lossless (%)</th>
+              <th>Domain Drift (%)</th>
+              <th>R_byte (%)</th>
+              <th>OOV Cost</th>
+              <th>Bytes/Tok</th>
+            </tr>
+          </thead>
+          <tbody id="acad-scorecard-tbody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: FIGURES -->
+    <div id="tab-figures-acad" class="section-tab">
+      <div class="scenario-strip-header">
+        <h2 class="scenario-title">Publication Exhibits from Research Paper</h2>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">Directly extracted from <code>nlp_paper-2.pdf</code></span>
+      </div>
+
+      <div class="scenario-pills-wrap" id="acad-figures-tabs">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div class="figures-grid-academic">
+        <div class="fig-img-frame">
+          <img id="acad-fig-img" src="figures/paper_figure_1_architecture.png" alt="Paper Figure" onclick="openAcadZoom(this.src)">
+        </div>
+        <div class="fig-caption-wrap">
+          <div id="acad-fig-badge" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--academic-blue); margin-bottom: 0.4rem;">System Architecture</div>
+          <h3 id="acad-fig-title" class="fig-caption-title">Fig. 1: SPARSE-INDIC Modular Architecture Workflow</h3>
+          <div id="acad-fig-source" style="font-size: 0.8rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; margin-bottom: 0.75rem;">Source: nlp_paper-2.pdf (Page 4)</div>
+          <p id="acad-fig-desc" style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">
+            Modular workflow showing Pre-tokenizer, Akshara-Boundary Guard, Dravidian Suffix Splitter, Always-On Core (32k), 12 Language Banks (8.2k each), Two-Tier Activation Router, and Sparse LM Head.
+          </p>
+          <div style="background: var(--sage-bg); border: 1px solid var(--sage-border); padding: 0.85rem; border-radius: 6px; font-size: 0.85rem; color: var(--sage-green);">
+            <strong>Empirical Finding:</strong>
+            <span id="acad-fig-impact">69.16% LM-Head FLOP reduction & 68.40% TPOT speedup with zero out-of-script leakage.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Zoom Modal -->
+  <div id="acad-zoom-modal" class="zoom-modal" onclick="closeAcadZoom()">
+    <img id="acad-zoom-img" src="" alt="Fullscreen Figure">
+  </div>
+
+  <footer>
+    <div class="header-inner" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <div>SPARSE-INDIC Research Consortium • RV University, Bengaluru, India</div>
+      <div>Evaluation Suite: <a href="https://github.com/rohzhegde26/NLP_TOKENIZER_TAX/tree/idea-2" target="_blank" style="color: var(--academic-blue);">rohzhegde26/NLP_TOKENIZER_TAX</a></div>
+    </div>
+  </footer>
+
+  <script src="data/demo_data.js"></script>
+  <script>
+    let DATA = window.EMBEDDED_DEMO_DATA || null;
+    let activeProbeIdx = 0;
+    let activeRivalKey = "cl100k_base";
+    let activeFigIdx = 0;
+
+    async function initAcademicApp() {
+      if (!DATA) {
+        try {
+          const res = await fetch('data/demo_data.json');
+          DATA = await res.json();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      if (!DATA) return;
+
+      renderAcadPresets();
+      renderAcadScorecard();
+      renderAcadFiguresTabs();
+      loadAcadProbe(0);
+      setupAcadEditor();
+    }
+
+    function renderAcadPresets() {
+      const container = document.getElementById("acad-presets-container");
+      container.innerHTML = "";
+      DATA.probes.forEach((p, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `scenario-pill ${idx === 0 ? 'active' : ''}`;
+        btn.innerText = `${p.probe_info.language_name.split('(')[0].trim()} Probe`;
+        btn.onclick = () => loadAcadProbe(idx);
+        container.appendChild(btn);
+      });
+    }
+
+    function loadAcadProbe(idx) {
+      activeProbeIdx = idx;
+      const probe = DATA.probes[idx];
+      const pInfo = probe.probe_info;
+
+      document.querySelectorAll(".scenario-pill").forEach((el, i) => {
+        el.classList.toggle("active", i === idx);
+      });
+
+      document.getElementById("acad-input-text").value = pInfo.text;
+      document.getElementById("acad-english-ref").innerText = pInfo.english;
+      document.getElementById("acad-probe-desc").innerText = pInfo.description;
+      document.getElementById("acad-target-failure").innerText = pInfo.failure_target;
+      document.getElementById("acad-category-badge").innerText = pInfo.category;
+      document.getElementById("acad-lang-code").innerText = pInfo.lang_code;
+
+      updateAcadCounters(pInfo.text);
+      renderAcadTokens();
+    }
+
+    function renderAcadTokens() {
+      const probe = DATA.probes[activeProbeIdx];
+      const sData = probe.tokenizers["sparse_indic"];
+      const rData = probe.tokenizers[activeRivalKey] || probe.tokenizers["cl100k_base"];
+
+      // Sparse
+      document.getElementById("acad-sparse-count").innerText = sData.token_count;
+      document.getElementById("acad-sparse-parity").innerText = sData.parity_ratio + "×";
+      const sStream = document.getElementById("acad-sparse-stream");
+      sStream.innerHTML = "";
+      sData.tokens.forEach((tok) => {
+        const span = document.createElement("span");
+        let cls = "tok-sparse-safe";
+        if (tok.category === "core") cls = "tok-sparse-core";
+        if (tok.is_fallback) cls = "tok-sparse-fallback";
+        span.className = `academic-token ${cls}`;
+        span.innerText = tok.piece === " " ? "␣" : tok.piece;
+        span.onmouseenter = () => {
+          document.getElementById("acad-sparse-inspector").innerText = `ID: ${tok.id} | ${tok.detail}`;
+        };
+        sStream.appendChild(span);
+      });
+
+      // Rival
+      document.getElementById("acad-rival-count").innerText = rData.token_count;
+      document.getElementById("acad-rival-parity").innerText = rData.parity_ratio + "×";
+      document.getElementById("acad-rival-active-vocab").innerText = rData.active_vocab.toLocaleString();
+      document.getElementById("acad-rival-vocab-badge").innerText = `Vocab: ${rData.active_vocab.toLocaleString()}`;
+
+      const alertMsg = document.getElementById("acad-rival-alert-msg");
+      if (rData.broken_aksharas_count > 0) {
+        alertMsg.innerText = `⚠️ ${rData.broken_aksharas_count} Broken Aksharas (${rData.single_byte_count} Byte Fallbacks)`;
+      } else {
+        alertMsg.innerText = `✅ Aksharas Intact`;
+        alertMsg.style.color = "var(--sage-green)";
+      }
+
+      const rStream = document.getElementById("acad-rival-stream");
+      rStream.innerHTML = "";
+      rData.tokens.forEach((tok) => {
+        const span = document.createElement("span");
+        let cls = "tok-base-regular";
+        if (tok.is_broken_akshara) cls = "tok-base-broken";
+        else if (tok.is_single_byte) cls = "tok-base-byte";
+        span.className = `academic-token ${cls}`;
+        span.innerText = tok.piece === " " ? "␣" : tok.piece;
+        span.onmouseenter = () => {
+          let extra = tok.detail;
+          if (tok.is_broken_akshara) extra += " [Broken Syllable]";
+          document.getElementById("acad-rival-inspector").innerText = `ID: ${tok.id} | ${extra}`;
+        };
+        rStream.appendChild(span);
+      });
+    }
+
+    function onAcadRivalChange() {
+      activeRivalKey = document.getElementById("acad-rival-select").value;
+      renderAcadTokens();
+    }
+
+    function setupAcadEditor() {
+      const ed = document.getElementById("acad-input-text");
+      ed.addEventListener("input", () => {
+        updateAcadCounters(ed.value);
+      });
+    }
+
+    function updateAcadCounters(text) {
+      const chars = text.length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const bytes = new TextEncoder().encode(text).length;
+      document.getElementById("acad-stats-counter").innerText = `${chars} chars | ${words} words | ${bytes} bytes`;
+    }
+
+    function renderAcadScorecard() {
+      const tbody = document.getElementById("acad-scorecard-tbody");
+      tbody.innerHTML = "";
+      DATA.scorecard.forEach(r => {
+        const tr = document.createElement("tr");
+        if (r["Tokenizer / Paradigm"].includes("SPARSE-INDIC")) tr.className = "row-highlight-ours";
+        tr.innerHTML = `
+          <td><strong>${r["Tokenizer / Paradigm"]}</strong></td>
+          <td>${r["Total Vocab"].toLocaleString()}</td>
+          <td>${r["Active Vocab"].toLocaleString()}</td>
+          <td>${r["FLOP Reduction (%)"] > 0 ? r["FLOP Reduction (%)"].toFixed(1) + '%' : '0.0%'}</td>
+          <td>${r["TPOT Speedup (%)"] > 0 ? r["TPOT Speedup (%)"].toFixed(1) + '%' : '0.0%'}</td>
+          <td>${r["Mean Parity (P_L)"].toFixed(3)}×</td>
+          <td>${r["Indic Gini"].toFixed(4)}</td>
+          <td>${r["Vocab Util (%)"].toFixed(1)}%</td>
+          <td>${r["Split Aksharas (%)"] === 0 ? '<strong>0.00%</strong>' : r["Split Aksharas (%)"].toFixed(2) + '%'}</td>
+          <td>${r["Morph F1"].toFixed(3)}</td>
+          <td>${r["Exact Lossless (%)"].toFixed(1)}%</td>
+          <td>${r["Domain Drift (%)"].toFixed(2)}%</td>
+          <td>${r["R_byte (%)"].toFixed(2)}%</td>
+          <td>${r["OOV Cost (tok/char)"].toFixed(1)}</td>
+          <td>${r["Bytes/Token"].toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderAcadFiguresTabs() {
+      const container = document.getElementById("acad-figures-tabs");
+      container.innerHTML = "";
+      DATA.figures.forEach((fig, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `scenario-pill ${idx === 0 ? 'active' : ''}`;
+        btn.innerText = fig.title.split(':')[0].trim();
+        btn.onclick = () => loadAcadFig(idx);
+        container.appendChild(btn);
+      });
+    }
+
+    function loadAcadFig(idx) {
+      activeFigIdx = idx;
+      const fig = DATA.figures[idx];
+      document.getElementById("acad-fig-img").src = "figures/" + fig.filename;
+      document.getElementById("acad-fig-badge").innerText = fig.badge;
+      document.getElementById("acad-fig-title").innerText = fig.title;
+      document.getElementById("acad-fig-source").innerText = "Source: " + fig.source;
+      document.getElementById("acad-fig-desc").innerText = fig.description;
+      document.getElementById("acad-fig-impact").innerText = fig.impact;
+    }
+
+    function switchAcademicTab(tabId, el) {
+      document.querySelectorAll(".section-tab").forEach(t => t.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.querySelectorAll(".academic-nav-btn").forEach(b => b.classList.remove("active"));
+      if (el) el.classList.add("active");
+    }
+
+    function openAcadZoom(src) {
+      document.getElementById("acad-zoom-img").src = src;
+      document.getElementById("acad-zoom-modal").classList.add("active");
+    }
+    function closeAcadZoom() {
+      document.getElementById("acad-zoom-modal").classList.remove("active");
+    }
+
+    window.onload = initAcademicApp;
+  </script>
+</body>
+</html>
