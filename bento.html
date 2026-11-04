@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPARSE-INDIC Studio | Bento-Grid Tokenizer Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="assets/gpt-tokenizer.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090b10;
+      --bg-card: #131722;
+      --bg-card-inner: #0d1017;
+      --bg-elevated: #1a2030;
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --cyan: #06b6d4;
+      --indigo: #6366f1;
+      --rose: #f43f5e;
+      --amber: #f59e0b;
+      --purple: #a855f7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Style Switcher Bar */
+    .style-switcher-bar {
+      background: #05070a;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.5rem 2rem;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-dim);
+    }
+    .style-switcher-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .style-pill {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+    .style-pill:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .style-pill.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.3);
+      font-weight: 600;
+    }
+
+    /* Navbar */
+    header {
+      background: rgba(15, 19, 28, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+    }
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #064e3b;
+      font-weight: 800;
+      font-size: 1.15rem;
+      box-shadow: 0 0 20px var(--emerald-glow);
+    }
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .badge-bento {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+    }
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+    }
+    .nav-link-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      padding: 0.45rem 0.95rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .nav-link-btn:hover, .nav-link-btn.active {
+      color: white;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--border-subtle);
+    }
+    .nav-link-btn.active {
+      background: #10b981;
+      color: #064e3b;
+      border: none;
+    }
+
+    /* Main Container */
+    .bento-wrapper {
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* BENTO GRID DEFINITION */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Bento Tile Common Styles */
+    .bento-tile {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .bento-tile:hover {
+      border-color: var(--border-hover);
+    }
+    .tile-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Specific Bento Tile Sizes */
+    .tile-span-3 { grid-column: span 3; }
+    .tile-span-4 { grid-column: span 4; }
+    .tile-span-6 { grid-column: span 6; }
+    .tile-span-8 { grid-column: span 8; }
+    .tile-span-9 { grid-column: span 9; }
+    .tile-span-12 { grid-column: span 12; }
+
+    @media (max-width: 1180px) {
+      .tile-span-3 { grid-column: span 6; }
+      .tile-span-4 { grid-column: span 6; }
+      .tile-span-8 { grid-column: span 12; }
+      .tile-span-9 { grid-column: span 12; }
+    }
+    @media (max-width: 768px) {
+      .tile-span-3, .tile-span-4, .tile-span-6 { grid-column: span 12; }
+    }
+
+    /* Stat Cards */
+    .stat-hero-val {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: white;
+      line-height: 1.05;
+      margin-bottom: 0.35rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .stat-hero-val.emerald {
+      color: #34d399;
+      text-shadow: 0 0 24px var(--emerald-glow);
+    }
+    .stat-hero-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Scenario Horizontal Pill Selector */
+    .scenario-pill-scroll {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.65rem;
+      margin-bottom: 1.25rem;
+      scrollbar-width: thin;
+    }
+    .bento-pill {
+      background: var(--bg-card-inner);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
+      padding: 0.45rem 0.95rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .bento-pill:hover {
+      color: white;
+      border-color: var(--border-hover);
+      background: var(--bg-elevated);
+    }
+    .bento-pill.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: #10b981;
+      color: #34d399;
+      box-shadow: 0 0 16px var(--emerald-glow);
+    }
+
+    /* Text Editor Bento */
+    .bento-editor-wrap {
+      background: var(--bg-card-inner);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .bento-textarea {
+      width: 100%;
+      min-height: 85px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+    }
+    .bento-translation {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 0.65rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .bento-translation strong {
+      color: #818cf8;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Dual Token Stream Bento Grid */
+    .dual-stream-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 900px) {
+      .dual-stream-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stream-box {
+      background: var(--bg-card-inner);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .stream-box.ours {
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.06);
+    }
+    .stream-header {
+      padding: 0.85rem 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stream-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .select-bento {
+      background: var(--bg-elevated);
+      color: white;
+      border: 1px solid var(--border-subtle);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      outline: none;
+    }
+
+    /* Token Chips Ribbon */
+    .token-chips-viewport {
+      padding: 1.25rem;
+      min-height: 240px;
+      max-height: 380px;
+      overflow-y: auto;
+      line-height: 2.2;
+    }
+    .bento-token {
+      display: inline-flex;
+      align-items: center;
+      margin: 2px 2px;
+      padding: 0.2rem 0.55rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      user-select: all;
+    }
+    .bento-token:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.25);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    /* Vibrant Chips Palette */
+    .b-c0 { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); }
+    .b-c1 { background: rgba(6, 182, 212, 0.18); color: #67e8f9; border-color: rgba(6, 182, 212, 0.4); }
+    .b-c2 { background: rgba(99, 102, 241, 0.18); color: #a5b4fc; border-color: rgba(99, 102, 241, 0.4); }
+    .b-c3 { background: rgba(168, 85, 247, 0.18); color: #d8b4fe; border-color: rgba(168, 85, 247, 0.4); }
+    .b-c4 { background: rgba(245, 158, 11, 0.18); color: #fde68a; border-color: rgba(245, 158, 11, 0.4); }
+
+    .b-regular { background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border-color: rgba(255, 255, 255, 0.1); }
+    .b-broken {
+      background: rgba(244, 63, 94, 0.25) !important;
+      color: #fda4af !important;
+      border: 1.5px dashed #f43f5e !important;
+      box-shadow: 0 0 10px rgba(244, 63, 94, 0.35);
+    }
+    .b-byte {
+      background: rgba(234, 88, 12, 0.25) !important;
+      color: #fed7aa !important;
+      border: 1px solid #ea580c !important;
+    }
+
+    .stream-inspector-footer {
+      padding: 0.65rem 1.25rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Diagnostics Bento Box */
+    .diag-banner {
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+    }
+    .diag-banner-title {
+      color: #fb7185;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Scorecard Table Bento */
+    .bento-table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+    .bento-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: right;
+    }
+    .bento-table th, .bento-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+    .bento-table th {
+      background: var(--bg-card-inner);
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+    }
+    .bento-table th:first-child, .bento-table td:first-child {
+      text-align: left;
+    }
+    .bento-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .bento-row-ours {
+      background: rgba(16, 185, 129, 0.08) !important;
+      font-weight: 700;
+    }
+    .bento-row-ours td {
+      color: #34d399;
+      border-bottom-color: rgba(16, 185, 129, 0.25);
+    }
+
+    /* Figures Bento Gallery */
+    .figures-bento-hero {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .figures-bento-hero {
+        grid-template-columns: 1fr;
+      }
+    }
+    .fig-bento-frame {
+      background: #000000;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+      padding: 1rem;
+      text-align: center;
+    }
+    .fig-bento-frame img {
+      max-width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      cursor: zoom-in;
+    }
+
+    /* Modal */
+    .bento-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 7, 10, 0.92);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .bento-modal.active { display: flex; }
+    .bento-modal img {
+      max-width: 95%; max-height: 90vh;
+      border-radius: 12px;
+      border: 1px solid var(--border-hover);
+    }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2.5rem 2rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Style Switcher -->
+  <div class="style-switcher-bar">
+    <div class="style-switcher-group">
+      <span>Dashboard Style:</span>
+      <a href="index.html" class="style-pill">Editorial Academic (Style 2 - Default)</a>
+      <a href="glassmorphism.html" class="style-pill">Dark Glassmorphism (Style 1)</a>
+      <a href="bento.html" class="style-pill active">Bento-Grid Dashboard (Style 4 - Active)</a>
+    </div>
+    <div>
+      <span>Target Branch: <code>idea-2</code> (RV University)</span>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand-wrap">
+        <div class="brand-icon">SP</div>
+        <div class="brand-title">
+          SPARSE-INDIC Studio
+          <span class="badge-bento badge-emerald">Bento v2.0</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <button class="nav-link-btn active" onclick="scrollToBento('bento-playground')">Studio</button>
+        <button class="nav-link-btn" onclick="scrollToBento('bento-figures')">Paper Exhibits</button>
+        <button class="nav-link-btn" onclick="scrollToBento('bento-scorecard')">Master Scorecard</button>
+        <a href="https://github.com/rohzhegde26/NLP_TOKENIZER_TAX/tree/idea-2" target="_blank" class="nav-link-btn" style="background: rgba(255,255,255,0.06); text-decoration: none;">GitHub ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="bento-wrapper">
+
+    <!-- BENTO GRID HERO METRICS -->
+    <div class="bento-grid">
+
+      <!-- TILE 1: FLOP REDUCTION (Hero Tile - 4 cols) -->
+      <div class="bento-tile tile-span-4" style="background: linear-gradient(135deg, #131722 0%, #15222b 100%); border-color: rgba(16, 185, 129, 0.4);">
+        <div class="tile-title">
+          <span>Active Compute Efficiency</span>
+          <span class="badge-bento badge-emerald">Verified DoD-1A</span>
+        </div>
+        <div class="stat-hero-val emerald">69.16%</div>
+        <div class="stat-hero-sub">
+          LM-Head active projection FLOP reduction through decoupled language banks.
+        </div>
+        <div style="margin-top: auto; padding-top: 1rem; font-size: 0.75rem; color: #34d399; font-weight: 600;">
+          Only 40,192 parameters active per token step (vs 248k+)
+        </div>
+      </div>
+
+      <!-- TILE 2: TPOT SPEEDUP (3 cols) -->
+      <div class="bento-tile tile-span-3">
+        <div class="tile-title">
+          <span>Latency Speedup</span>
+          <span class="badge-bento badge-emerald">DoD-1B</span>
+        </div>
+        <div class="stat-hero-val emerald">68.40%</div>
+        <div class="stat-hero-sub">
+          Autoregressive Time-Per-Output-Token speedup (<strong style="color:white">13.90 ms</strong> vs 43.98 ms).
+        </div>
+      </div>
+
+      <!-- TILE 3: PARITY RATIO (3 cols) -->
+      <div class="bento-tile tile-span-3">
+        <div class="tile-title">
+          <span>Mean Indic Parity (P_L)</span>
+          <span class="badge-bento badge-emerald">DoD-2A</span>
+        </div>
+        <div class="stat-hero-val emerald">1.100×</div>
+        <div class="stat-hero-sub">
+          Near-unity token parity relative to English (vs <strong>7.451×</strong> in OpenAI cl100k).
+        </div>
+      </div>
+
+      <!-- TILE 4: AKSHARA SAFETY (2 cols) -->
+      <div class="bento-tile tile-span-2">
+        <div class="tile-title">
+          <span>Split Aksharas</span>
+        </div>
+        <div class="stat-hero-val emerald" style="font-size: 2.2rem;">0.00%</div>
+        <div class="stat-hero-sub">
+          100% orthographic syllable integrity.
+        </div>
+      </div>
+
+      <!-- TILE 5: MAIN COMPARATIVE TOKENIZER STUDIO (12 cols) -->
+      <div id="bento-playground" class="bento-tile tile-span-12">
+        <div class="tile-title">
+          <span>Comparative Multi-Lingual Tokenizer Studio</span>
+          <span id="bento-category-tag" class="badge-bento badge-emerald">Orthographic Aksharas</span>
+        </div>
+
+        <!-- Scenario Pills -->
+        <div class="scenario-pill-scroll" id="bento-presets-container">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- Text Input Bento Box -->
+        <div class="bento-editor-wrap">
+          <textarea id="bento-input-text" class="bento-textarea" spellcheck="false" placeholder="Type or paste any Indic text here..."></textarea>
+          <div class="bento-translation">
+            <strong>English Reference:</strong>
+            <span id="bento-english-ref">The Indian Institute of Technology located in Chennai is a premier university.</span>
+          </div>
+        </div>
+
+        <!-- Dual Stream View -->
+        <div class="dual-stream-grid">
+
+          <!-- Left Stream: SPARSE-INDIC -->
+          <div class="stream-box ours">
+            <div class="stream-header">
+              <div class="stream-title">
+                <span style="color: #34d399;">●</span>
+                <span>SPARSE-INDIC (Ours)</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span id="bento-sparse-count-badge" class="badge-bento badge-emerald">28 Tokens</span>
+                <span id="bento-sparse-parity-badge" style="font-size: 0.75rem; color: var(--text-dim); font-family: 'JetBrains Mono';">1.12×</span>
+              </div>
+            </div>
+
+            <div class="token-chips-viewport" id="bento-sparse-chips">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="stream-inspector-footer">
+              <span>Token Inspector:</span>
+              <span id="bento-sparse-inspector" style="font-family: 'JetBrains Mono'; color: #34d399;">Hover token</span>
+            </div>
+          </div>
+
+          <!-- Right Stream: Baseline Competitor -->
+          <div class="stream-box">
+            <div class="stream-header">
+              <div class="stream-title">
+                <label for="bento-rival-select" style="display:none">Rival</label>
+                <select id="bento-rival-select" class="select-bento" onchange="onBentoRivalChange()">
+                  <option value="cl100k_base" selected>OpenAI Legacy BPE (cl100k_base)</option>
+                  <option value="o200k_base">OpenAI Modern BPE (o200k_base)</option>
+                  <option value="qwen2_5">Qwen 2.5 Byte-Level BPE (1.5B)</option>
+                  <option value="qwen3_5">Qwen 3.5 Byte-Level BPE (4B)</option>
+                  <option value="gemma_2">Gemma-2 SentencePiece (2B)</option>
+                  <option value="gemma_4">Gemma-4 SentencePiece (E2B-it)</option>
+                  <option value="lfm_3">Liquid LFM-3 (1.7B)</option>
+                  <option value="xlm_roberta">Multilingual Unigram LM (XLM-RoBERTa)</option>
+                  <option value="mbert">Legacy WordPiece (mBERT)</option>
+                  <option value="indicbert_v2">IndicBERTv2 (ai4bharat)</option>
+                  <option value="parity_bpe">Parity-Aware BPE (2026)</option>
+                  <option value="super_bpe">SuperBPE (2025 Multi-Word)</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span id="bento-rival-count-badge" class="badge-bento" style="background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.3);">75 Tokens</span>
+                <span id="bento-rival-delta-badge" style="font-size: 0.75rem; color: #f43f5e; font-weight: 700;">+168% Tax</span>
+              </div>
+            </div>
+
+            <div class="token-chips-viewport" id="bento-rival-chips">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="stream-inspector-footer">
+              <span id="bento-rival-alert-msg" style="color: #fb7185; font-weight: 700;">12 Broken Aksharas Detected</span>
+              <span id="bento-rival-inspector" style="font-family: 'JetBrains Mono'; color: white;">Hover token</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Diagnostics Banner -->
+        <div class="diag-banner">
+          <div class="diag-banner-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span id="bento-diag-title">Pathology Breakdown: Severed Aksharas & UTF-8 Byte Decomposition</span>
+          </div>
+          <p id="bento-diag-text" style="font-size: 0.85rem; color: #fda4af; line-height: 1.6;">
+            Baseline BPE divides conjunct syllables into disconnected pieces. Dependent vowel signs (matras) and viramas are stripped into isolated tokens, corrupting downstream attention. SPARSE-INDIC prevents all akshara splitting through orthographic pre-tokenization bounds.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- TILE 6: MASTER SCORECARD MATRIX (12 cols) -->
+      <div id="bento-scorecard" class="bento-tile tile-span-12">
+        <div class="tile-title">
+          <span>Phase 2 Master Comparative Scorecard (14 Empirical Metrics)</span>
+          <span class="badge-bento badge-emerald">100% Passing DoD Gates</span>
+        </div>
+        <div class="bento-table-wrap">
+          <table class="bento-table" id="bento-scorecard-table">
+            <thead>
+              <tr>
+                <th>Tokenizer / Paradigm</th>
+                <th>Total Vocab</th>
+                <th>Active Vocab</th>
+                <th>FLOP Red. (%)</th>
+                <th>TPOT Speedup (%)</th>
+                <th>Mean Parity (P_L)</th>
+                <th>Indic Gini</th>
+                <th>Vocab Util (%)</th>
+                <th>Split Aksharas (%)</th>
+                <th>Morph F1</th>
+                <th>Lossless (%)</th>
+                <th>Domain Drift (%)</th>
+                <th>R_byte (%)</th>
+                <th>OOV Cost</th>
+                <th>Bytes/Tok</th>
+              </tr>
+            </thead>
+            <tbody id="bento-scorecard-tbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TILE 7: RESEARCH FIGURES & EXHIBITS (12 cols) -->
+      <div id="bento-figures" class="bento-tile tile-span-12">
+        <div class="tile-title">
+          <span>Research Paper Figures & Publication Exhibits</span>
+          <span class="badge-bento" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3);">nlp_paper-2.pdf</span>
+        </div>
+
+        <div class="scenario-pill-scroll" id="bento-figures-nav">
+          <!-- Rendered via JS -->
+        </div>
+
+        <div class="figures-bento-hero">
+          <div class="fig-bento-frame">
+            <img id="bento-fig-img" src="figures/paper_figure_1_architecture.png" alt="Figure Exhibit" onclick="openBentoModal(this.src)">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <div id="bento-fig-badge" class="badge-bento badge-emerald" style="align-self: flex-start;">System Architecture</div>
+            <h3 id="bento-fig-title" style="font-size: 1.25rem; font-weight: 700; color: white;">Fig. 1: SPARSE-INDIC Modular Architecture Workflow</h3>
+            <div id="bento-fig-source" style="font-size: 0.78rem; font-family: 'JetBrains Mono'; color: var(--text-dim);">Source: nlp_paper-2.pdf (Page 4)</div>
+            <p id="bento-fig-desc" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+              Dynamic activation routing across decoupled language banks (8,192 tokens/bank) and an always-on core (32,000 tokens), featuring akshara-boundary guards (0.0% split), Dravidian suffix splitting (F1 = 0.929), latent pan-Indic phonetic alignment, and script-relative fallback.
+            </p>
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); padding: 0.85rem; border-radius: 10px; font-size: 0.82rem; color: #6ee7b7;">
+              <strong>Empirical Impact:</strong>
+              <span id="bento-fig-impact">69.16% LM-Head FLOP reduction & 68.40% TPOT speedup with zero out-of-script leakage.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Zoom Modal -->
+  <div id="bento-zoom-modal" class="bento-modal" onclick="closeBentoModal()">
+    <img id="bento-zoom-img" src="" alt="Fullscreen Figure">
+  </div>
+
+  <footer>
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <div>SPARSE-INDIC Project • RV University, Bengaluru, India</div>
+      <div>Repository: <a href="https://github.com/rohzhegde26/NLP_TOKENIZER_TAX/tree/idea-2" target="_blank" style="color: #34d399; text-decoration: none;">rohzhegde26/NLP_TOKENIZER_TAX (idea-2)</a></div>
+    </div>
+  </footer>
+
+  <script src="data/demo_data.js"></script>
+  <script>
+    let DATA = window.EMBEDDED_DEMO_DATA || null;
+    let activeProbeIdx = 0;
+    let activeRivalKey = "cl100k_base";
+    let activeFigIdx = 0;
+    const CHIP_PALETTES = ["b-c0", "b-c1", "b-c2", "b-c3", "b-c4"];
+
+    async function initBentoApp() {
+      if (!DATA) {
+        try {
+          const res = await fetch('data/demo_data.json');
+          DATA = await res.json();
+        } catch (e) { console.error(e); }
+      }
+      if (!DATA) return;
+
+      renderBentoPresets();
+      renderBentoScorecard();
+      renderBentoFiguresNav();
+      loadBentoProbe(0);
+      setupBentoEditor();
+    }
+
+    function renderBentoPresets() {
+      const container = document.getElementById("bento-presets-container");
+      container.innerHTML = "";
+      DATA.probes.forEach((p, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `bento-pill ${idx === 0 ? 'active' : ''}`;
+        btn.innerText = p.probe_info.language_name.split('(')[0].trim();
+        btn.onclick = () => loadBentoProbe(idx);
+        container.appendChild(btn);
+      });
+    }
+
+    function loadBentoProbe(idx) {
+      activeProbeIdx = idx;
+      const probe = DATA.probes[idx];
+      const pInfo = probe.probe_info;
+
+      document.querySelectorAll(".bento-pill").forEach((el, i) => {
+        el.classList.toggle("active", i === idx);
+      });
+
+      document.getElementById("bento-input-text").value = pInfo.text;
+      document.getElementById("bento-english-ref").innerText = pInfo.english;
+      document.getElementById("bento-category-tag").innerText = pInfo.category;
+
+      renderBentoTokens();
+    }
+
+    function renderBentoTokens() {
+      const probe = DATA.probes[activeProbeIdx];
+      const sData = probe.tokenizers["sparse_indic"];
+      const rData = probe.tokenizers[activeRivalKey] || probe.tokenizers["cl100k_base"];
+
+      // Sparse
+      document.getElementById("bento-sparse-count-badge").innerText = `${sData.token_count} Tokens`;
+      document.getElementById("bento-sparse-parity-badge").innerText = `${sData.parity_ratio}× Parity`;
+
+      const sStream = document.getElementById("bento-sparse-chips");
+      sStream.innerHTML = "";
+      sData.tokens.forEach((tok, i) => {
+        const span = document.createElement("span");
+        span.className = `bento-token ${CHIP_PALETTES[i % CHIP_PALETTES.length]}`;
+        span.innerText = tok.piece === " " ? "␣" : tok.piece;
+        span.onmouseenter = () => {
+          document.getElementById("bento-sparse-inspector").innerText = `ID: ${tok.id} | ${tok.detail}`;
+        };
+        sStream.appendChild(span);
+      });
+
+      // Rival
+      document.getElementById("bento-rival-count-badge").innerText = `${rData.token_count} Tokens`;
+      const delta = Math.round(((rData.token_count - sData.token_count) / sData.token_count) * 100);
+      document.getElementById("bento-rival-delta-badge").innerText = delta > 0 ? `+${delta}% Tax` : `${delta}% Savings`;
+
+      const alertMsg = document.getElementById("bento-rival-alert-msg");
+      if (rData.broken_aksharas_count > 0) {
+        alertMsg.innerText = `⚠️ ${rData.broken_aksharas_count} Broken Aksharas (${rData.single_byte_count} Byte Fallbacks)`;
+      } else {
+        alertMsg.innerText = `✅ Intact Aksharas`;
+        alertMsg.style.color = "#34d399";
+      }
+
+      const rStream = document.getElementById("bento-rival-chips");
+      rStream.innerHTML = "";
+      rData.tokens.forEach((tok, i) => {
+        const span = document.createElement("span");
+        let cls = "b-regular";
+        if (tok.is_broken_akshara) cls = "b-broken";
+        else if (tok.is_single_byte) cls = "b-byte";
+        span.className = `bento-token ${cls}`;
+        span.innerText = tok.piece === " " ? "␣" : tok.piece;
+        span.onmouseenter = () => {
+          let extra = tok.detail;
+          if (tok.is_broken_akshara) extra += " [Broken Syllable]";
+          document.getElementById("bento-rival-inspector").innerText = `ID: ${tok.id} | ${extra}`;
+        };
+        rStream.appendChild(span);
+      });
+    }
+
+    function onBentoRivalChange() {
+      activeRivalKey = document.getElementById("bento-rival-select").value;
+      renderBentoTokens();
+    }
+
+    function setupBentoEditor() {
+      const ed = document.getElementById("bento-input-text");
+      ed.addEventListener("input", () => {
+        if (ed.value.trim() === DATA.probes[activeProbeIdx].probe_info.text.trim()) {
+          renderBentoTokens();
+        }
+      });
+    }
+
+    function renderBentoScorecard() {
+      const tbody = document.getElementById("bento-scorecard-tbody");
+      tbody.innerHTML = "";
+      DATA.scorecard.forEach(r => {
+        const tr = document.createElement("tr");
+        if (r["Tokenizer / Paradigm"].includes("SPARSE-INDIC")) tr.className = "bento-row-ours";
+        tr.innerHTML = `
+          <td><strong>${r["Tokenizer / Paradigm"]}</strong></td>
+          <td>${r["Total Vocab"].toLocaleString()}</td>
+          <td>${r["Active Vocab"].toLocaleString()}</td>
+          <td>${r["FLOP Reduction (%)"] > 0 ? r["FLOP Reduction (%)"].toFixed(1) + '%' : '0.0%'}</td>
+          <td>${r["TPOT Speedup (%)"] > 0 ? r["TPOT Speedup (%)"].toFixed(1) + '%' : '0.0%'}</td>
+          <td>${r["Mean Parity (P_L)"].toFixed(3)}×</td>
+          <td>${r["Indic Gini"].toFixed(4)}</td>
+          <td>${r["Vocab Util (%)"].toFixed(1)}%</td>
+          <td>${r["Split Aksharas (%)"] === 0 ? '<span style="color:#34d399">0.00%</span>' : r["Split Aksharas (%)"].toFixed(2) + '%'}</td>
+          <td>${r["Morph F1"].toFixed(3)}</td>
+          <td>${r["Exact Lossless (%)"].toFixed(1)}%</td>
+          <td>${r["Domain Drift (%)"].toFixed(2)}%</td>
+          <td>${r["R_byte (%)"].toFixed(2)}%</td>
+          <td>${r["OOV Cost (tok/char)"].toFixed(1)}</td>
+          <td>${r["Bytes/Token"].toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderBentoFiguresNav() {
+      const container = document.getElementById("bento-figures-nav");
+      container.innerHTML = "";
+      DATA.figures.forEach((fig, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `bento-pill ${idx === 0 ? 'active' : ''}`;
+        btn.innerText = fig.title.split(':')[0].trim();
+        btn.onclick = () => loadBentoFig(idx);
+        container.appendChild(btn);
+      });
+    }
+
+    function loadBentoFig(idx) {
+      activeFigIdx = idx;
+      const fig = DATA.figures[idx];
+      document.getElementById("bento-fig-img").src = "figures/" + fig.filename;
+      document.getElementById("bento-fig-badge").innerText = fig.badge;
+      document.getElementById("bento-fig-title").innerText = fig.title;
+      document.getElementById("bento-fig-source").innerText = "Source: " + fig.source;
+      document.getElementById("bento-fig-desc").innerText = fig.description;
+      document.getElementById("bento-fig-impact").innerText = fig.impact;
+    }
+
+    function scrollToBento(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openBentoModal(src) {
+      document.getElementById("bento-zoom-img").src = src;
+      document.getElementById("bento-zoom-modal").classList.add("active");
+    }
+    function closeBentoModal() {
+      document.getElementById("bento-zoom-modal").classList.remove("active");
+    }
+
+    window.onload = initBentoApp;
+  </script>
+</body>
+</html>

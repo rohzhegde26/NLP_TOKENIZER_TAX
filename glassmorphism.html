@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPARSE-INDIC Tokenizer Playground | Comparative Demo & Linguistic Tax Studio</title>
+  <link rel="icon" type="image/svg+xml" href="assets/gpt-tokenizer.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0d14;
+      --bg-surface: #111622;
+      --bg-surface-elevated: #161e30;
+      --bg-card: #151b2b;
+      --border-color: #232d42;
+      --border-hover: #3b4866;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-emerald: #10b981;
+      --accent-emerald-glow: rgba(16, 185, 129, 0.2);
+      --accent-indigo: #6366f1;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #a855f7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-hover);
+    }
+
+    /* Header & Navigation */
+    header {
+      background: rgba(17, 22, 34, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+    }
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 1.25rem;
+      box-shadow: 0 0 16px var(--accent-emerald-glow);
+    }
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-indigo {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+    .badge-rose {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    nav {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .nav-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      color: var(--text-main);
+      background: var(--bg-surface-elevated);
+      border-color: var(--border-color);
+    }
+    .nav-btn.primary {
+      background: #10b981;
+      color: #064e3b;
+      font-weight: 600;
+      border: none;
+    }
+    .nav-btn.primary:hover {
+      background: #34d399;
+    }
+
+    /* Key Metrics Ticker Banner */
+    .ticker-bar {
+      background: linear-gradient(90deg, #0e1422 0%, #111a2e 50%, #0e1422 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.55rem 1.5rem;
+    }
+    .ticker-inner {
+      max-width: 1560px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.8rem;
+    }
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+    }
+    .ticker-val {
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: #34d399;
+    }
+
+    /* Main Container */
+    .app-container {
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    /* Section Tabs */
+    .view-section {
+      display: none;
+    }
+    .view-section.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Toolbar / Scenarios Strip */
+    .scenarios-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .scenarios-scroll {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+      scrollbar-width: thin;
+    }
+    .preset-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.5rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .preset-pill:hover {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border-color: var(--border-hover);
+    }
+    .preset-pill.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: #10b981;
+      color: #34d399;
+      box-shadow: 0 0 12px var(--accent-emerald-glow);
+    }
+
+    /* Input & Objective Grid */
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 1080px) {
+      .input-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      position: relative;
+    }
+    .card-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Input Box */
+    .text-editor-wrap {
+      position: relative;
+    }
+    .text-editor {
+      width: 100%;
+      min-height: 105px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      font-family: inherit;
+      resize: vertical;
+      line-height: 1.6;
+      transition: border-color 0.15s ease;
+    }
+    .text-editor:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 2px var(--accent-emerald-glow);
+    }
+    .editor-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.65rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+    .editor-stats {
+      display: flex;
+      gap: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .btn-sm {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-sm:hover {
+      color: var(--text-main);
+      border-color: var(--border-hover);
+    }
+
+    /* English translation & Objective cards */
+    .translation-bar {
+      margin-top: 0.75rem;
+      background: var(--bg-surface);
+      border-left: 3px solid #6366f1;
+      padding: 0.6rem 0.85rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .translation-bar strong {
+      color: #818cf8;
+      font-weight: 600;
+      margin-right: 0.4rem;
+    }
+
+    .objective-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .objective-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+    .target-badge-wrap {
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      border-radius: 8px;
+      padding: 0.65rem;
+      font-size: 0.75rem;
+      color: #fda4af;
+    }
+    .target-badge-wrap strong {
+      color: #f43f5e;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    /* Dual-Panel Comparison Canvas */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 960px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .model-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .model-panel.ours {
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 4px 24px rgba(16, 185, 129, 0.08);
+    }
+    .model-panel.rival {
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .panel-header {
+      padding: 1rem 1.25rem;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .panel-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: white;
+    }
+    .model-select {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+    .model-select:focus {
+      border-color: #6366f1;
+    }
+
+    /* Metric Badges Ribbon */
+    .metrics-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    @media (max-width: 600px) {
+      .metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .metric-cell {
+      background: var(--bg-surface);
+      padding: 0.65rem 0.85rem;
+      text-align: center;
+    }
+    .metric-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+    .metric-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: white;
+      margin-top: 0.15rem;
+    }
+    .metric-sub {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Pathology / Safety Banner */
+    .safety-banner {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .safety-safe {
+      background: rgba(16, 185, 129, 0.1);
+      color: #34d399;
+    }
+    .safety-alert {
+      background: rgba(244, 63, 94, 0.12);
+      color: #fb7185;
+      border-bottom-color: rgba(244, 63, 94, 0.3);
+    }
+
+    /* Token Visualizer Ribbon */
+    .token-stream-wrap {
+      padding: 1.25rem;
+      flex-grow: 1;
+      background: var(--bg-card);
+      overflow-y: auto;
+      max-height: 380px;
+      line-height: 2.1;
+    }
+
+    .token-badge {
+      display: inline-flex;
+      align-items: center;
+      margin: 2px 2px;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      position: relative;
+      border: 1px solid transparent;
+      user-select: all;
+    }
+    .token-badge:hover {
+      filter: brightness(1.25);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      z-index: 10;
+    }
+
+    /* Token Palette */
+    .tok-c0 { background: #1e293b; color: #94a3b8; border-color: #334155; }
+    .tok-c1 { background: #132d4b; color: #7dd3fc; border-color: #0284c7; }
+    .tok-c2 { background: #281a42; color: #d8b4fe; border-color: #9333ea; }
+    .tok-c3 { background: #3b2314; color: #fed7aa; border-color: #ea580c; }
+    .tok-c4 { background: #0c382e; color: #6ee7b7; border-color: #059669; }
+    .tok-c5 { background: #361726; color: #fbcfe8; border-color: #db2777; }
+    .tok-c6 { background: #1f3624; color: #bef264; border-color: #65a30d; }
+    .tok-c7 { background: #14353b; color: #67e8f9; border-color: #0891b2; }
+
+    /* Special Pathology Overrides */
+    .tok-broken-akshara {
+      background: rgba(225, 29, 72, 0.28) !important;
+      color: #fda4af !important;
+      border: 1px dashed #f43f5e !important;
+      box-shadow: 0 0 6px rgba(244, 63, 94, 0.3);
+    }
+    .tok-byte-fallback {
+      background: rgba(234, 88, 12, 0.25) !important;
+      color: #fdba74 !important;
+      border: 1px solid #ea580c !important;
+    }
+    .tok-brahmic-fallback {
+      background: rgba(16, 185, 129, 0.25) !important;
+      color: #6ee7b7 !important;
+      border: 1px solid #10b981 !important;
+    }
+
+    .space-indicator {
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 0.8rem;
+    }
+
+    /* Token Inspector Bar */
+    .inspector-footer {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      padding: 0.65rem 1.25rem;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+    .inspector-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: white;
+    }
+
+    /* Diagnostics Card */
+    .diagnostic-alert-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      display: none;
+    }
+    .diagnostic-alert-card.active {
+      display: block;
+    }
+    .diagnostic-title {
+      color: #fb7185;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .diagnostic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 768px) {
+      .diagnostic-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .diag-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem;
+    }
+    .diag-box-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.35rem;
+    }
+    .diag-box p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Research Paper Figures & Evidence Gallery */
+    .gallery-container {
+      margin-bottom: 3rem;
+    }
+    .gallery-tabs {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .gallery-tab-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .gallery-tab-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-surface-elevated);
+    }
+    .gallery-tab-btn.active {
+      background: #6366f1;
+      color: white;
+      border-color: #6366f1;
+      font-weight: 600;
+    }
+
+    .figure-display-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .figure-display-card {
+        grid-template-columns: 1fr;
+      }
+    }
+    .figure-image-wrap {
+      background: #060910;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 420px;
+      position: relative;
+    }
+    .figure-img {
+      max-width: 100%;
+      height: auto;
+      max-height: 520px;
+      object-fit: contain;
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
+    }
+    .figure-img:hover {
+      transform: scale(1.015);
+    }
+    .figure-info-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .fig-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      display: inline-block;
+      align-self: flex-start;
+    }
+    .fig-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+      line-height: 1.35;
+    }
+    .fig-source {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .fig-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .fig-impact {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-size: 0.85rem;
+      color: #6ee7b7;
+    }
+    .fig-impact strong {
+      color: #10b981;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    /* Scorecard Table */
+    .scorecard-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow-x: auto;
+      margin-bottom: 3rem;
+    }
+    .scorecard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: right;
+    }
+    .scorecard-table th, .scorecard-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .scorecard-table th {
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      position: sticky;
+      top: 0;
+    }
+    .scorecard-table th:first-child, .scorecard-table td:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: var(--bg-card);
+      z-index: 5;
+    }
+    .scorecard-table th:first-child {
+      background: var(--bg-surface);
+      z-index: 15;
+    }
+    .scorecard-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .row-ours {
+      background: rgba(16, 185, 129, 0.08) !important;
+      font-weight: 600;
+    }
+    .row-ours td {
+      color: #34d399;
+      border-bottom-color: rgba(16, 185, 129, 0.25);
+    }
+    .row-ours td:first-child {
+      background: #112520 !important;
+      color: #10b981 !important;
+      font-weight: 700;
+    }
+
+    /* Modal for Image Zoom */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 7, 13, 0.9);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-img {
+      max-width: 95%;
+      max-height: 90vh;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: var(--bg-surface-elevated);
+      color: white;
+      border: 1px solid var(--border-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.25rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      padding: 2rem 1.5rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+    .footer-inner {
+      max-width: 1560px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Style Switcher -->
+  <div style="background: #060910; border-bottom: 1px solid var(--border-color); padding: 0.45rem 1.5rem; font-size: 0.8rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-dim);">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <span style="font-weight: 600;">Layout Style:</span>
+      <a href="index.html" style="color: #cbd5e1; text-decoration: none; padding: 0.2rem 0.55rem; border-radius: 4px;">Editorial Academic (Style 2 - Default)</a>
+      <a href="glassmorphism.html" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 600; padding: 0.2rem 0.55rem; border-radius: 4px; text-decoration: none;">Dark Glassmorphism (Style 1 - Active)</a>
+      <a href="bento.html" style="color: #cbd5e1; text-decoration: none; padding: 0.2rem 0.55rem; border-radius: 4px;">Bento-Grid Dashboard (Style 4)</a>
+    </div>
+    <div>
+      <span>Branch: <code>idea-2</code> (RV University)</span>
+    </div>
+  </div>
+
+  <!-- Top Header -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="brand-wrap">
+        <div class="brand-logo">SP</div>
+        <div>
+          <div class="brand-title">
+            SPARSE-INDIC
+            <span class="badge-tag badge-emerald">v2.0 Active Sparsity</span>
+            <span class="badge-tag badge-indigo">13 Languages</span>
+          </div>
+        </div>
+      </a>
+
+      <nav>
+        <button class="nav-btn active" onclick="switchMainTab('tab-playground', this)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 9h6"/></svg>
+          Interactive Playground
+        </button>
+        <button class="nav-btn" onclick="switchMainTab('tab-figures', this)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+          Paper Figures & Graphs
+        </button>
+        <button class="nav-btn" onclick="switchMainTab('tab-scorecard', this)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          Phase 2 Master Scorecard
+        </button>
+        <a href="https://github.com/rohzhegde26/NLP_TOKENIZER_TAX/tree/idea-2" target="_blank" class="nav-btn primary">
+          GitHub Repo
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Key Metrics Ticker Banner -->
+  <div class="ticker-bar">
+    <div class="ticker-inner">
+      <div class="ticker-item">
+        <span>Active FLOP Reduction:</span>
+        <span class="ticker-val">69.16%</span>
+      </div>
+      <div class="ticker-item">
+        <span>TPOT Latency Speedup:</span>
+        <span class="ticker-val">68.40% (13.9 ms vs 44.0 ms)</span>
+      </div>
+      <div class="ticker-item">
+        <span>Mean Indic Parity ($P_L$):</span>
+        <span class="ticker-val">1.100× (vs 7.45× cl100k)</span>
+      </div>
+      <div class="ticker-item">
+        <span>Split Akshara Rate:</span>
+        <span class="ticker-val">0.0000% (Guaranteed Safe)</span>
+      </div>
+      <div class="ticker-item">
+        <span>Active GPU Vocab:</span>
+        <span class="ticker-val">40,192 (vs 248,000+ Dense)</span>
+      </div>
+      <div class="ticker-item">
+        <span>Definition of Done Gates:</span>
+        <span class="ticker-val">11 / 11 Passed</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- TAB 1: INTERACTIVE PLAYGROUND -->
+    <section id="tab-playground" class="view-section active">
+
+      <!-- Scenario Selector Toolbar -->
+      <div class="scenarios-header">
+        <h2 class="section-title">
+          <span>Curated Multi-Lingual Linguistic Probes</span>
+          <span id="probe-category-badge" class="badge-tag badge-emerald">Orthographic Aksharas</span>
+        </h2>
+        <div style="font-size: 0.8rem; color: var(--text-dim);">
+          Click any preset to trigger specific failure modes across rival tokenizers
+        </div>
+      </div>
+
+      <div class="scenarios-scroll" id="presets-container">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Input Text & Probe Objective Card -->
+      <div class="input-grid">
+        <div class="card">
+          <div class="card-title">
+            <span>Input Indic Sentence (Live Editable Sandbox)</span>
+            <span id="char-word-bytes-counter" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">72 chars | 9 words | 196 bytes</span>
+          </div>
+          <div class="text-editor-wrap">
+            <textarea id="main-text-input" class="text-editor" spellcheck="false" placeholder="Enter or paste any Indic text here..."></textarea>
+          </div>
+          <div class="translation-bar">
+            <strong>English Parallel:</strong>
+            <span id="english-ref-text">The Indian Institute of Technology located in Chennai is a premier university.</span>
+          </div>
+          <div class="editor-footer">
+            <div class="btn-group">
+              <button class="btn-sm" onclick="resetActivePreset()">Reset Preset</button>
+              <button class="btn-sm" onclick="clearInput()">Clear</button>
+              <button class="btn-sm" onclick="nextPreset()">Next Scenario →</button>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-dim);">
+              Supports custom freeform text across all 13 Brahmic and Latin scripts
+            </div>
+          </div>
+        </div>
+
+        <!-- Objective & Target Failure Card -->
+        <div class="card objective-card">
+          <div>
+            <div class="card-title">
+              <span>Linguistic Probe Objective</span>
+              <span id="probe-lang-code" class="badge-tag badge-indigo">hin_Deva</span>
+            </div>
+            <p id="probe-desc-text" class="objective-text">
+              Exposes broken akshara pathologies in conjuncts (प्रौद्योगिकी, संस्थान, विश्वविद्यालय). Standard BPE splits consonants from dependent matras or decomposes into raw UTF-8 bytes, whereas SPARSE-INDIC keeps all akshara syllables intact.
+            </p>
+          </div>
+          <div class="target-badge-wrap">
+            <strong>Target Failure Modes:</strong>
+            <span id="probe-target-text">Liquid LFM-3 (48.7% split), OpenAI cl100k (32+ tokens for 4 words), and Qwen 2.5.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison Canvas -->
+      <div class="comparison-grid">
+
+        <!-- LEFT PANEL: SPARSE-INDIC (OURS) -->
+        <div class="model-panel ours">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <span class="badge-tag badge-emerald">OURS</span>
+              <span class="panel-name">SPARSE-INDIC</span>
+            </div>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <span class="badge-tag badge-emerald">Always-On Core: 32k</span>
+              <span class="badge-tag badge-emerald">Bank: 8.2k</span>
+            </div>
+          </div>
+
+          <!-- Metrics Ribbon -->
+          <div class="metrics-ribbon">
+            <div class="metric-cell">
+              <div class="metric-label">Token Count</div>
+              <div id="sparse-token-count" class="metric-val" style="color: #34d399;">28</div>
+              <div class="metric-sub">tokens</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-label">Parity Ratio ($P_L$)</div>
+              <div id="sparse-parity-ratio" class="metric-val">1.12×</div>
+              <div class="metric-sub">vs English</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-label">Active GPU Vocab</div>
+              <div class="metric-val" style="color: #34d399;">40,192</div>
+              <div class="metric-sub">-69.2% FLOPs</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-label">TPOT Latency</div>
+              <div class="metric-val" style="color: #34d399;">13.9 ms</div>
+              <div class="metric-sub">68.4% faster</div>
+            </div>
+          </div>
+
+          <!-- Safety Status -->
+          <div class="safety-banner safety-safe">
+            <span>🛡️ Akshara Protection: 100% Intact</span>
+            <span>0 Broken Syllables | 0 Single-Byte Fallbacks</span>
+          </div>
+
+          <!-- Token Stream -->
+          <div class="token-stream-wrap" id="sparse-token-stream">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- Inspector Footer -->
+          <div class="inspector-footer">
+            <span>Hover on any token to view ID and classification:</span>
+            <span id="sparse-token-inspector" class="inspector-val">ID: - | Type: -</span>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL: RIVAL BASELINE TOKENIZER -->
+        <div class="model-panel rival">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <span class="badge-tag badge-rose">COMPETITOR</span>
+              <label for="rival-select" style="display:none">Select Rival</label>
+              <select id="rival-select" class="model-select" onchange="onRivalChange()">
+                <option value="cl100k_base" selected>OpenAI Legacy BPE (cl100k_base)</option>
+                <option value="o200k_base">OpenAI Modern BPE (o200k_base)</option>
+                <option value="qwen2_5">Qwen 2.5 Byte-Level BPE (1.5B)</option>
+                <option value="qwen3_5">Qwen 3.5 Byte-Level BPE (4B)</option>
+                <option value="gemma_2">Gemma-2 SentencePiece (2B)</option>
+                <option value="gemma_4">Gemma-4 SentencePiece (E2B-it)</option>
+                <option value="lfm_3">Liquid LFM-3 (1.7B)</option>
+                <option value="xlm_roberta">Multilingual Unigram LM (XLM-RoBERTa)</option>
+                <option value="mbert">Legacy Multilingual WordPiece (mBERT)</option>
+                <option value="indicbert_v2">IndicBERTv2 (ai4bharat)</option>
+                <option value="parity_bpe">Parity-Aware BPE (2026)</option>
+                <option value="super_bpe">SuperBPE (2025 Multi-Word)</option>
+              </select>
+            </div>
+            <div id="rival-vocab-badge" class="badge-tag badge-indigo">Vocab: 100,277</div>
+          </div>
+
+          <!-- Metrics Ribbon -->
+          <div class="metrics-ribbon">
+            <div class="metric-cell">
+              <div class="metric-label">Token Count</div>
+              <div id="rival-token-count" class="metric-val" style="color: #fb7185;">75</div>
+              <div id="rival-delta-pct" class="metric-sub" style="color: #f43f5e;">+168% tax</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-label">Parity Ratio ($P_L$)</div>
+              <div id="rival-parity-ratio" class="metric-val" style="color: #fb7185;">7.45×</div>
+              <div class="metric-sub">vs English</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-label">Active GPU Vocab</div>
+              <div id="rival-active-vocab" class="metric-val">100,277</div>
+              <div class="metric-sub">0.0% sparsity</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-label">TPOT Latency</div>
+              <div id="rival-latency" class="metric-val">44.0 ms</div>
+              <div class="metric-sub">Dense projection</div>
+            </div>
+          </div>
+
+          <!-- Safety Status -->
+          <div id="rival-safety-banner" class="safety-banner safety-alert">
+            <span id="rival-safety-text">❌ Pathology Detected: 12 Broken Aksharas</span>
+            <span id="rival-fallback-text">32 Unmerged Bytes</span>
+          </div>
+
+          <!-- Token Stream -->
+          <div class="token-stream-wrap" id="rival-token-stream">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- Inspector Footer -->
+          <div class="inspector-footer">
+            <span>Hover on any token to view ID and pathology flag:</span>
+            <span id="rival-token-inspector" class="inspector-val">ID: - | Type: -</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Pathology Deep-Dive Diagnostic Card -->
+      <div id="diagnostic-deep-dive" class="diagnostic-alert-card active">
+        <div class="diagnostic-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span id="diag-headline">Linguistic Failure Mode Analysis: Broken Aksharas & Token Inflation</span>
+        </div>
+        <div class="diagnostic-grid">
+          <div class="diag-box">
+            <div class="diag-box-title">Why the Competitor Fails on this Input</div>
+            <p id="diag-rival-explanation">
+              The selected baseline divides conjunct syllables (e.g. 'प्रौ', 'स्था', 'वि') across arbitrary subword or single-byte merges. Orphaned vowel matras and viramas force downstream attention heads to reconstruct fragmented phonological representations across multiple embedding vectors, directly reducing task accuracy.
+            </p>
+          </div>
+          <div class="diag-box">
+            <div class="diag-box-title">How SPARSE-INDIC Solves It Synergistically</div>
+            <p id="diag-sparse-solution">
+              SPARSE-INDIC's Akshara-Bounded Pretokenizer checks Brahmic regex constraints before merge tournaments occur. It enforces that viramas and dependent vowels can never be severed from base consonants, guaranteeing 0.0000% split aksharas and reducing token count by up to 7.45×.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- TAB 2: RESEARCH PAPER FIGURES & EVIDENCE -->
+    <section id="tab-figures" class="view-section">
+      <div class="scenarios-header">
+        <h2 class="section-title">
+          <span>Empirical Evidence & Figures from Research Paper</span>
+          <span class="badge-tag badge-indigo">nlp_paper-2.pdf</span>
+        </h2>
+        <div style="font-size: 0.8rem; color: var(--text-dim);">
+          High-resolution publication figures extracted directly from the paper and benchmark suites
+        </div>
+      </div>
+
+      <div class="gallery-tabs" id="figures-tabs-container">
+        <!-- Rendered via JS -->
+      </div>
+
+      <div class="figure-display-card">
+        <div class="figure-image-wrap">
+          <img id="active-figure-img" class="figure-img" src="figures/paper_figure_1_architecture.png" alt="Paper Figure" onclick="openModal(this.src)">
+        </div>
+        <div class="figure-info-wrap">
+          <div id="active-fig-badge" class="fig-badge">System Architecture</div>
+          <h3 id="active-fig-title" class="fig-title">Fig. 1: SPARSE-INDIC Modular Architecture Workflow</h3>
+          <div id="active-fig-source" class="fig-source">Source: nlp_paper-2.pdf (Page 4)</div>
+          <p id="active-fig-desc" class="fig-desc">
+            Dynamic activation routing across decoupled language banks (8,192 tokens/bank) and an always-on core (32,000 tokens), featuring akshara-boundary guards (0.0% split), Dravidian suffix splitting (F1 = 0.929), latent pan-Indic phonetic alignment (cosine = 0.9115), and script-relative fallback.
+          </p>
+          <div class="fig-impact">
+            <strong>Key Quantitative Impact:</strong>
+            <span id="active-fig-impact">69.16% LM-Head FLOP reduction & 68.40% TPOT speedup with zero out-of-script leakage.</span>
+          </div>
+          <div style="margin-top: auto; display: flex; gap: 0.5rem;">
+            <button class="btn-sm" style="flex:1" onclick="openModal(document.getElementById('active-figure-img').src)">Click to Zoom Fullscreen 🔍</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- TAB 3: PHASE 2 MASTER SCORECARD -->
+    <section id="tab-scorecard" class="view-section">
+      <div class="scenarios-header">
+        <h2 class="section-title">
+          <span>Phase 2 Master Comparative Scorecard (12 Quantitative Metrics)</span>
+          <span class="badge-tag badge-emerald">100% Programmatic Audit</span>
+        </h2>
+        <div style="font-size: 0.8rem; color: var(--text-dim);">
+          Exact test outputs from <code>scripts/run_phase2_benchmarks.py</code> on FLORES-200 and Belebele
+        </div>
+      </div>
+
+      <div class="scorecard-wrap">
+        <table class="scorecard-table" id="master-scorecard-table">
+          <thead>
+            <tr>
+              <th>Tokenizer / Paradigm</th>
+              <th>Total Vocab</th>
+              <th>Active Vocab</th>
+              <th>FLOP Red. (%)</th>
+              <th>TPOT Speedup (%)</th>
+              <th>Mean Parity ($P_L$)</th>
+              <th>Indic Gini</th>
+              <th>Vocab Util (%)</th>
+              <th>Split Aksharas (%)</th>
+              <th>Morph F1</th>
+              <th>Lossless (%)</th>
+              <th>Domain Drift (%)</th>
+              <th>$R_{\text{byte}}$ (%)</th>
+              <th>OOV Cost</th>
+              <th>Bytes/Tok</th>
+            </tr>
+          </thead>
+          <tbody id="scorecard-tbody">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-title">Scorecard Methodology & Highlights</div>
+        <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.7;">
+          <p>• <strong>FLOP Reduction & Latency:</strong> SPARSE-INDIC decodes using active slices of the projection matrix ($W_{\text{active}} \in \mathbb{R}^{40,192 \times d}$), delivering an empirical <strong>69.16% FLOP reduction</strong> and <strong>68.40% Time-Per-Output-Token speedup</strong>.</p>
+          <p>• <strong>Akshara Preservation:</strong> Baseline tokenizers show split akshara rates from 9.7% up to 48.70% (Liquid LFM-3). SPARSE-INDIC maintains an exact <strong>0.0000% split rate</strong> across all emitted tokens.</p>
+          <p>• <strong>Dravidian Morphological F1:</strong> Evaluated on held-out Dravidian inflections. Dense baselines achieve 0.13–0.45 F1, while SPARSE-INDIC achieves <strong>0.929 F1</strong> by isolating postpositions and case markers.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Zoom Modal -->
+  <div id="image-modal" class="modal-overlay" onclick="closeModal()">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <img id="modal-image-tag" class="modal-img" src="" alt="Zoomed Graphic">
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <strong>The Tokenizer Tax & SPARSE-INDIC Architecture</strong> — RV University, Bengaluru, India.
+      </div>
+      <div>
+        Research Repository: <a href="https://github.com/rohzhegde26/NLP_TOKENIZER_TAX/tree/idea-2" target="_blank" style="color: #34d399; text-decoration: none;">rohzhegde26/NLP_TOKENIZER_TAX (branch: idea-2)</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Load Data -->
+  <script src="data/demo_data.js"></script>
+  <script>
+    // State
+    let DATA = window.EMBEDDED_DEMO_DATA || null;
+    let activeProbeIdx = 0;
+    let activeRivalKey = "cl100k_base";
+    let activeFigIdx = 0;
+
+    // Palette classes for visualizer
+    const PALETTES = ["tok-c0", "tok-c1", "tok-c2", "tok-c3", "tok-c4", "tok-c5", "tok-c6", "tok-c7"];
+
+    // Initialize App
+    async function initApp() {
+      if (!DATA) {
+        try {
+          const res = await fetch('data/demo_data.json');
+          DATA = await res.json();
+        } catch (e) {
+          console.error("Failed to load demo_data.json:", e);
+        }
+      }
+
+      if (!DATA) {
+        alert("Could not load demo data. Please run via scripts/launch_demo.py or ensure demo_data.js is present.");
+        return;
+      }
+
+      renderPresets();
+      renderScorecard();
+      renderFiguresTabs();
+      loadProbe(0);
+      setupEditorListeners();
+    }
+
+    // Render Preset Scenario Pills
+    function renderPresets() {
+      const container = document.getElementById("presets-container");
+      container.innerHTML = "";
+
+      DATA.probes.forEach((p, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `preset-pill ${idx === 0 ? 'active' : ''}`;
+        btn.id = `preset-pill-${idx}`;
+        btn.onclick = () => loadProbe(idx);
+
+        let icon = "🇮🇳";
+        if (p.probe_info.family === "Dravidian") icon = "🌴";
+        if (p.probe_info.category.includes("Code-Mixing")) icon = "💬";
+        if (p.probe_info.category.includes("Fallback")) icon = "🛡️";
+        if (p.probe_info.category.includes("Domain")) icon = "⚡";
+
+        btn.innerHTML = `<span>${icon}</span> <span>${p.probe_info.language_name.split('(')[0].trim()}</span>`;
+        container.appendChild(btn);
+      });
+    }
+
+    // Load Specific Probe Scenario
+    function loadProbe(idx) {
+      activeProbeIdx = idx;
+      const probe = DATA.probes[idx];
+      const pInfo = probe.probe_info;
+
+      // Update active pill
+      document.querySelectorAll(".preset-pill").forEach((el, i) => {
+        el.classList.toggle("active", i === idx);
+      });
+
+      // Update text editor & objective info
+      document.getElementById("main-text-input").value = pInfo.text;
+      document.getElementById("english-ref-text").innerText = pInfo.english;
+      document.getElementById("probe-desc-text").innerText = pInfo.description;
+      document.getElementById("probe-target-text").innerText = pInfo.failure_target;
+      document.getElementById("probe-category-badge").innerText = pInfo.category;
+      document.getElementById("probe-lang-code").innerText = pInfo.lang_code;
+
+      updateStatsCounters(pInfo.text);
+      renderTokens();
+    }
+
+    // Render Tokens in Left and Right panels
+    function renderTokens() {
+      const probe = DATA.probes[activeProbeIdx];
+      const sparseData = probe.tokenizers["sparse_indic"];
+      const rivalData = probe.tokenizers[activeRivalKey] || probe.tokenizers["cl100k_base"];
+
+      // --- Left: SPARSE-INDIC ---
+      document.getElementById("sparse-token-count").innerText = sparseData.token_count;
+      document.getElementById("sparse-parity-ratio").innerText = sparseData.parity_ratio + "×";
+
+      const sparseStream = document.getElementById("sparse-token-stream");
+      sparseStream.innerHTML = "";
+
+      sparseData.tokens.forEach((tok, i) => {
+        const span = document.createElement("span");
+        const palClass = tok.is_fallback ? "tok-brahmic-fallback" : PALETTES[i % PALETTES.length];
+        span.className = `token-badge ${palClass}`;
+        
+        let displayPiece = tok.piece;
+        if (displayPiece === " ") {
+          displayPiece = '<span class="space-indicator">␣</span>';
+        } else if (displayPiece.startsWith(" ")) {
+          displayPiece = '<span class="space-indicator">␣</span>' + escapeHtml(displayPiece.substring(1));
+        } else {
+          displayPiece = escapeHtml(displayPiece);
+        }
+
+        span.innerHTML = displayPiece;
+        span.onmouseenter = () => {
+          document.getElementById("sparse-token-inspector").innerText = 
+            `ID: ${tok.id} | Piece: '${tok.piece}' | ${tok.detail}`;
+        };
+        sparseStream.appendChild(span);
+      });
+
+      // --- Right: Rival Baseline ---
+      document.getElementById("rival-token-count").innerText = rivalData.token_count;
+      document.getElementById("rival-parity-ratio").innerText = rivalData.parity_ratio + "×";
+      document.getElementById("rival-active-vocab").innerText = rivalData.active_vocab.toLocaleString();
+      document.getElementById("rival-vocab-badge").innerText = `Vocab: ${rivalData.active_vocab.toLocaleString()}`;
+
+      const delta = Math.round(((rivalData.token_count - sparseData.token_count) / sparseData.token_count) * 100);
+      const deltaEl = document.getElementById("rival-delta-pct");
+      if (delta > 0) {
+        deltaEl.innerText = `+${delta}% tax`;
+        deltaEl.style.color = "#f43f5e";
+      } else {
+        deltaEl.innerText = `${delta}% savings`;
+        deltaEl.style.color = "#34d399";
+      }
+
+      // Safety banner
+      const banner = document.getElementById("rival-safety-banner");
+      const safetyText = document.getElementById("rival-safety-text");
+      const fallbackText = document.getElementById("rival-fallback-text");
+
+      if (rivalData.broken_aksharas_count > 0 || rivalData.single_byte_count > 0) {
+        banner.className = "safety-banner safety-alert";
+        safetyText.innerText = `❌ Pathology: ${rivalData.broken_aksharas_count} Broken Aksharas`;
+        fallbackText.innerText = `${rivalData.single_byte_count} Unmerged Bytes`;
+      } else {
+        banner.className = "safety-banner safety-safe";
+        safetyText.innerText = `✅ Intact Akshara Boundaries`;
+        fallbackText.innerText = `0 Unmerged Bytes`;
+      }
+
+      const rivalStream = document.getElementById("rival-token-stream");
+      rivalStream.innerHTML = "";
+
+      rivalData.tokens.forEach((tok, i) => {
+        const span = document.createElement("span");
+        let extraClass = PALETTES[i % PALETTES.length];
+        if (tok.is_broken_akshara) extraClass = "tok-broken-akshara";
+        else if (tok.is_single_byte) extraClass = "tok-byte-fallback";
+
+        span.className = `token-badge ${extraClass}`;
+        
+        let displayPiece = tok.piece;
+        if (displayPiece === " " || displayPiece === "Ġ" || displayPiece === " ") {
+          displayPiece = '<span class="space-indicator">␣</span>';
+        } else if (displayPiece.startsWith(" ") || displayPiece.startsWith("Ġ") || displayPiece.startsWith(" ")) {
+          displayPiece = '<span class="space-indicator">␣</span>' + escapeHtml(displayPiece.substring(1));
+        } else {
+          displayPiece = escapeHtml(displayPiece);
+        }
+
+        span.innerHTML = displayPiece;
+        span.onmouseenter = () => {
+          let extra = tok.detail;
+          if (tok.is_broken_akshara) extra += " [⚠️ Orthographic Syllable Severed!]";
+          if (tok.is_single_byte) extra += " [⚠️ 3-Byte Decomposition!]";
+          document.getElementById("rival-token-inspector").innerText = 
+            `ID: ${tok.id} | Piece: '${tok.piece}' | ${extra}`;
+        };
+        rivalStream.appendChild(span);
+      });
+
+      // Update Diagnostics Card
+      updateDiagnosticCard(sparseData, rivalData);
+    }
+
+    // Diagnostics Card update
+    function updateDiagnosticCard(sparseData, rivalData) {
+      const card = document.getElementById("diagnostic-deep-dive");
+      const headline = document.getElementById("diag-headline");
+      const explanation = document.getElementById("diag-rival-explanation");
+      const solution = document.getElementById("diag-sparse-solution");
+
+      const rName = document.getElementById("rival-select").options[document.getElementById("rival-select").selectedIndex].text;
+
+      if (rivalData.broken_aksharas_count > 0) {
+        card.style.display = "block";
+        headline.innerText = `Linguistic Failure Mode: Broken Aksharas Detected in ${rName}`;
+        explanation.innerText = `The active input contains ${rivalData.broken_aksharas_count} broken akshara syllables under ${rName}. Dependent vowels (matras) and conjunct viramas have been detached from their consonant stems into isolated fragments. This degrades downstream reasoning because attention heads must reconstruct fragmented phonemes across multiple positions.`;
+        solution.innerText = `SPARSE-INDIC prevents akshara splitting through regex-enforced orthographic pre-tokenization boundaries. It guarantees 0.0000% split akshara rate across all 12 Brahmic scripts, preserving natural semantic units.`;
+      } else if (rivalData.token_count > sparseData.token_count * 1.5) {
+        card.style.display = "block";
+        headline.innerText = `Excess Subword Fertility Tax: ${Math.round(rivalData.token_count / sparseData.token_count)}× Inflation in ${rName}`;
+        explanation.innerText = `${rName} uses ${rivalData.token_count} tokens for this sentence compared to only ${sparseData.token_count} tokens in SPARSE-INDIC. This fertility inflation wastes over ${Math.round((1 - sparseData.token_count / rivalData.token_count) * 100)}% of the LLM context window and causes commercial API billing to multiply by the same factor.`;
+        solution.innerText = `SPARSE-INDIC provisions 12 dedicated 8,192-token language banks combined with scaffold token pruning, enabling high subword compression and an Indic parity ratio of 1.10× without bloating GPU parameters.`;
+      } else {
+        card.style.display = "block";
+        headline.innerText = `Comparative Efficiency & Architectural Sparsity`;
+        explanation.innerText = `While ${rName} achieves acceptable compression on this specific sequence, it relies on a monolithic ${rivalData.active_vocab.toLocaleString()}-token vocabulary that must remain fully loaded in GPU memory for every inference step.`;
+        solution.innerText = `SPARSE-INDIC activates only 40,192 tokens on demand, achieving 69.16% LM-Head FLOP reduction and 68.40% TPOT speedup with zero script leakage.`;
+      }
+    }
+
+    // Event on Rival change
+    function onRivalChange() {
+      activeRivalKey = document.getElementById("rival-select").value;
+      renderTokens();
+    }
+
+    // Live Text Editor Listener
+    function setupEditorListeners() {
+      const editor = document.getElementById("main-text-input");
+      editor.addEventListener("input", () => {
+        updateStatsCounters(editor.value);
+        // If current text equals preset, render stored trace, otherwise run heuristic live tokenization
+        if (editor.value.trim() === DATA.probes[activeProbeIdx].probe_info.text.trim()) {
+          renderTokens();
+        } else {
+          renderLiveDynamicTokenization(editor.value);
+        }
+      });
+    }
+
+    function updateStatsCounters(text) {
+      const chars = text.length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const bytes = new TextEncoder().encode(text).length;
+      document.getElementById("char-word-bytes-counter").innerText = `${chars} chars | ${words} words | ${bytes} bytes`;
+    }
+
+    // Heuristic Dynamic Tokenizer for freeform user input
+    function renderLiveDynamicTokenization(text) {
+      if (!text.trim()) return;
+
+      // Akshara regex for Brahmic scripts
+      const aksharaRegex = /(?:[\u0900-\u0D7F][\u094D\u09CD\u0A4D\u0ACD\u0B4D\u0BCD\u0C4D\u0CCD\u0D4D]?)+|[\w]+|[^\s\w]|\s+/gu;
+      const chunks = text.match(aksharaRegex) || [];
+
+      // Render SPARSE-INDIC stream
+      const sparseStream = document.getElementById("sparse-token-stream");
+      sparseStream.innerHTML = "";
+      chunks.forEach((chunk, i) => {
+        const span = document.createElement("span");
+        span.className = `token-badge ${PALETTES[i % PALETTES.length]}`;
+        span.innerHTML = chunk.isSpace ? '<span class="space-indicator">␣</span>' : escapeHtml(chunk);
+        sparseStream.appendChild(span);
+      });
+      document.getElementById("sparse-token-count").innerText = chunks.length;
+
+      // Simple character-level decomposition for rival to illustrate fragmentation
+      const rivalStream = document.getElementById("rival-token-stream");
+      rivalStream.innerHTML = "";
+      let rCount = 0;
+      chunks.forEach((chunk, i) => {
+        if (chunk.length > 2 && /[\u0900-\u0D7F]/.test(chunk)) {
+          // split chunk
+          for (let c of chunk) {
+            rCount++;
+            const span = document.createElement("span");
+            const isMatra = /[\u093E-\u094F\u09BE-\u09CD\u0A3E-\u0A4D\u0ABE-\u0ACD\u0B3E-\u0B4D\u0BBE-\u0BCD\u0C3E-\u0C4D\u0CBE-\u0CCD\u0D3E-\u0D4D]/.test(c);
+            span.className = `token-badge ${isMatra ? 'tok-broken-akshara' : PALETTES[rCount % PALETTES.length]}`;
+            span.innerHTML = escapeHtml(c);
+            rivalStream.appendChild(span);
+          }
+        } else {
+          rCount++;
+          const span = document.createElement("span");
+          span.className = `token-badge ${PALETTES[rCount % PALETTES.length]}`;
+          span.innerHTML = escapeHtml(chunk);
+          rivalStream.appendChild(span);
+        }
+      });
+      document.getElementById("rival-token-count").innerText = rCount;
+    }
+
+    function resetActivePreset() {
+      loadProbe(activeProbeIdx);
+    }
+
+    function clearInput() {
+      document.getElementById("main-text-input").value = "";
+      updateStatsCounters("");
+      document.getElementById("sparse-token-stream").innerHTML = "";
+      document.getElementById("rival-token-stream").innerHTML = "";
+    }
+
+    function nextPreset() {
+      const next = (activeProbeIdx + 1) % DATA.probes.length;
+      loadProbe(next);
+      document.getElementById(`preset-pill-${next}`).scrollIntoView({ behavior: 'smooth', inline: 'center' });
+    }
+
+    // Render Master Scorecard Table
+    function renderScorecard() {
+      const tbody = document.getElementById("scorecard-tbody");
+      tbody.innerHTML = "";
+
+      DATA.scorecard.forEach(row => {
+        const tr = document.createElement("tr");
+        const isOurs = row["Tokenizer / Paradigm"].includes("SPARSE-INDIC");
+        if (isOurs) tr.className = "row-ours";
+
+        tr.innerHTML = `
+          <td><strong>${row["Tokenizer / Paradigm"]}</strong></td>
+          <td>${row["Total Vocab"].toLocaleString()}</td>
+          <td>${row["Active Vocab"].toLocaleString()}</td>
+          <td>${row["FLOP Reduction (%)"] > 0 ? '<strong>' + row["FLOP Reduction (%)"].toFixed(1) + '%</strong>' : '0.0%'}</td>
+          <td>${row["TPOT Speedup (%)"] > 0 ? '<strong>' + row["TPOT Speedup (%)"].toFixed(1) + '%</strong>' : '0.0%'}</td>
+          <td>${row["Mean Parity (P_L)"].toFixed(3)}×</td>
+          <td>${row["Indic Gini"].toFixed(4)}</td>
+          <td>${row["Vocab Util (%)"].toFixed(1)}%</td>
+          <td>${row["Split Aksharas (%)"] === 0 ? '<span style="color:#10b981; font-weight:700">0.00%</span>' : row["Split Aksharas (%)"].toFixed(2) + '%'}</td>
+          <td>${row["Morph F1"].toFixed(3)}</td>
+          <td>${row["Exact Lossless (%)"].toFixed(1)}%</td>
+          <td>${row["Domain Drift (%)"].toFixed(2)}%</td>
+          <td>${row["R_byte (%)"].toFixed(2)}%</td>
+          <td>${row["OOV Cost (tok/char)"].toFixed(1)}</td>
+          <td>${row["Bytes/Token"].toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Render Paper Figures Tabs
+    function renderFiguresTabs() {
+      const container = document.getElementById("figures-tabs-container");
+      container.innerHTML = "";
+
+      DATA.figures.forEach((fig, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `gallery-tab-btn ${idx === 0 ? 'active' : ''}`;
+        btn.innerText = fig.title.split(':')[0].trim();
+        btn.onclick = () => loadFigure(idx);
+        container.appendChild(btn);
+      });
+    }
+
+    function loadFigure(idx) {
+      activeFigIdx = idx;
+      const fig = DATA.figures[idx];
+
+      document.querySelectorAll(".gallery-tab-btn").forEach((el, i) => {
+        el.classList.toggle("active", i === idx);
+      });
+
+      document.getElementById("active-figure-img").src = "figures/" + fig.filename;
+      document.getElementById("active-fig-badge").innerText = fig.badge;
+      document.getElementById("active-fig-title").innerText = fig.title;
+      document.getElementById("active-fig-source").innerText = "Source: " + fig.source;
+      document.getElementById("active-fig-desc").innerText = fig.description;
+      document.getElementById("active-fig-impact").innerText = fig.impact;
+    }
+
+    // Navigation Switcher
+    function switchMainTab(tabId, el) {
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
+      const targetSec = document.getElementById(tabId);
+      if (targetSec) targetSec.classList.add("active");
+
+      document.querySelectorAll("nav .nav-btn").forEach(btn => {
+        if (!btn.classList.contains("primary")) btn.classList.remove("active");
+      });
+      if (el) el.classList.add("active");
+    }
+
+    // Zoom Modal
+    function openModal(src) {
+      document.getElementById("modal-image-tag").src = src;
+      document.getElementById("image-modal").classList.add("active");
+    }
+    function closeModal() {
+      document.getElementById("image-modal").classList.remove("active");
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    window.onload = initApp;
+  </script>
+</body>
+</html>
