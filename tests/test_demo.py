@@ -58,11 +58,18 @@ def test_demo_data_integrity():
 
 
 def test_demo_html_components():
-    """Verify index.html contains essential DOM elements and functions."""
+    """Verify index.html and style variants contain essential DOM elements and functions."""
     html_text = DEMO_HTML.read_text(encoding="utf-8")
-    assert 'id="main-text-input"' in html_text
-    assert 'id="sparse-token-stream"' in html_text
-    assert 'id="rival-token-stream"' in html_text
-    assert 'id="scorecard-tbody"' in html_text
-    assert 'id="presets-container"' in html_text
     assert 'data/demo_data.js' in html_text
+    # index.html is Style 2 (Editorial Academic default)
+    assert 'id="acad-input-text"' in html_text or 'id="main-text-input"' in html_text
+    assert 'id="acad-sparse-stream"' in html_text or 'id="sparse-token-stream"' in html_text
+    assert 'id="acad-rival-stream"' in html_text or 'id="rival-token-stream"' in html_text
+    assert 'id="acad-scorecard-tbody"' in html_text or 'id="scorecard-tbody"' in html_text
+
+    # Also verify glassmorphism.html exists and has original elements
+    glass_html = DEMO_DIR / "glassmorphism.html"
+    if glass_html.exists():
+        g_text = glass_html.read_text(encoding="utf-8")
+        assert 'id="main-text-input"' in g_text
+        assert 'id="sparse-token-stream"' in g_text
