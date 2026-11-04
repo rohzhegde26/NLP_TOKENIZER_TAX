@@ -53,10 +53,8 @@ def build_site() -> None:
     print("Prepared index.html and academic.html (Style 2: Editorial Academic).")
 
     # 4. Prepare Style 1 as glassmorphism.html
-    glass_src = DEMO_DIR / "index.html"
+    glass_src = DEMO_DIR / "glassmorphism.html"
     glass_content = glass_src.read_text(encoding="utf-8")
-    glass_content = glass_content.replace('href="index.html" style="background: rgba(16, 185, 129, 0.15)', 'href="glassmorphism.html" style="background: rgba(16, 185, 129, 0.15)')
-    glass_content = glass_content.replace('href="academic.html"', 'href="index.html"')
     (BUILD_DIR / "glassmorphism.html").write_text(glass_content, encoding="utf-8")
     print("Prepared glassmorphism.html (Style 1: Dark Glassmorphism).")
 
